@@ -14,12 +14,20 @@ export default function BasicMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  // Tjek login-status ved mount
   useEffect(() => {
-    const session = supabase.auth.getSession()
-    session.then(({ data }) => {
+    // Hent session ved mount
+    supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(!!data.session)
     })
+
+    // Lyt på login/logout events
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session)
+    })
+
+    return () => {
+      listener.subscription.unsubscribe()
+    }
   }, [])
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -52,6 +60,7 @@ export default function BasicMenu() {
     await supabase.auth.signOut()
     setIsLoggedIn(false)
     handleClose()
+    router.push('/shop')   // redirect efter logout
   }
 
   return (
@@ -68,7 +77,7 @@ export default function BasicMenu() {
           backgroundColor: "white",
           borderTopLeftRadius: "2rem",
           borderTopRightRadius: "2rem",
-          zIndex: 11,
+          zIndex: 15,
           filter: "drop-shadow(2px 4px 6px black)"
         }}>
           <Link href="/"><img src="/logo.webp" alt='logo' width={50}/></Link>
@@ -84,7 +93,7 @@ export default function BasicMenu() {
         onClose={handleClose}
         slotProps={{ list: { 'aria-labelledby': 'basic-button' } }}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        sx={{ zIndex: 1, top: "-2rem", filter: "none", marginLeft: "1rem" }}
+        sx={{ zIndex: 10, top: "-2rem", filter: "none", marginLeft: "1rem" }}
         PaperProps={{ sx: { width: "100vw", maxWidth: "100vw", paddingBottom: "2rem" } }}
       >
         <Box>
@@ -96,7 +105,6 @@ export default function BasicMenu() {
             </>
           ) : (
             <>
-              {/* <MenuItem onClick={handleShop}>Shop</MenuItem> */}
               <MenuItem onClick={handleLogin}>Login</MenuItem>
               <MenuItem onClick={handleSignup}>Signup</MenuItem>
             </>

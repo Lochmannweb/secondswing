@@ -156,6 +156,8 @@ export default function ProfilePage() {
               <Divider />
               <a href="/opretProdukt">Opret produkt</a>
               <Divider />
+              <a href="/produkter">Produkter</a>
+              <Divider />
             </Box>
           </Box>
         </>

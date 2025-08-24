@@ -23,7 +23,7 @@ export default function LoginPage() {
       }
     } else if (data.user) {
       console.log('Logged in:', data)
-      router.push('/shop') // redirect efter login
+      router.push('/profile') // redirect efter login
     }
   }
 
