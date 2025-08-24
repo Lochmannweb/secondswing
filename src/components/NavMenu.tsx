@@ -43,6 +43,11 @@ export default function BasicMenu() {
     handleClose()
   }
 
+  const handleSignup = () => {
+    router.push('/auth/signup')
+    handleClose()
+  }
+
   const handleLogout = async () => {
     await supabase.auth.signOut()
     setIsLoggedIn(false)
@@ -58,12 +63,12 @@ export default function BasicMenu() {
           width: "100%",
           justifyContent: "space-between",
           padding: "1rem",
-          position: "absolute",
+          position: "fixed",
           bottom: 0,
           backgroundColor: "white",
           borderTopLeftRadius: "2rem",
           borderTopRightRadius: "2rem",
-          zIndex: 10,
+          zIndex: 11,
           filter: "drop-shadow(2px 4px 6px black)"
         }}>
           <Link href="/"><img src="/logo.webp" alt='logo' width={50}/></Link>
@@ -93,7 +98,7 @@ export default function BasicMenu() {
             <>
               {/* <MenuItem onClick={handleShop}>Shop</MenuItem> */}
               <MenuItem onClick={handleLogin}>Login</MenuItem>
-              <MenuItem onClick={handleClose}>Signup</MenuItem>
+              <MenuItem onClick={handleSignup}>Signup</MenuItem>
             </>
           )}
         </Box>

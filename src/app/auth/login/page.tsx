@@ -29,7 +29,7 @@ export default function LoginPage() {
 
   return (
     <Box sx={{ padding: "1rem", height: "100vh", alignContent: "center" }}>
-      <Typography sx={{ fontSize: "2.5rem", textAlign: "center" }}>Signup</Typography>
+      <Typography sx={{ fontSize: "2.5rem", textAlign: "center" }}>Login</Typography>
       <form style={{ display: "grid", gap: "1rem" }} onSubmit={handleLogin}>
         <input
           type="email"
@@ -70,6 +70,24 @@ export default function LoginPage() {
           type="submit">
             Login
           </Button>
+          <Box 
+            sx={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifySelf: "center" }}>
+            <p style={{ fontSize: "0.7rem" }}>Har du ikke allerede en konto?</p>
+            <Button
+              href='/auth/signup'
+              sx={{
+                color: "white",
+                "&:hover": {
+                  color: "blue",
+                  background: "none"
+                }
+              }}>
+                Signup
+            </Button>
+          </Box>
       </form>
     </Box>
   )
