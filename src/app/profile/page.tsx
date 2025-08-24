@@ -3,6 +3,7 @@
 import { supabase } from '@/lib/supabaseClient'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Box } from '@mui/material'
 
 type UserProfile = {
   id: string
@@ -38,13 +39,19 @@ export default function ProfilePage() {
 
   if (loading) return <p>Loading...</p>
 
-  return profile ? (
-    <div>
-      <h1>Min profil</h1>
-      <p>Email: {profile.email}</p>
-      <p>Navn: {profile.name}</p>
-    </div>
-  ) : (
-    <p>Ingen profil fundet</p>
+  return (
+    <>
+      <Box>
+        {profile ? (
+          <div>
+            <h1>Min profil</h1>
+            <p>Email: {profile.email}</p>
+            <p>Navn: {profile.name}</p>
+          </div>
+        ) : (
+          <p>Ingen profil fundet</p>
+        )}
+      </Box>
+    </>
   )
 }

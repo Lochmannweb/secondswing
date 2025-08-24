@@ -2,6 +2,7 @@
 import { supabase } from '@/lib/supabaseClient'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Box, Button, Typography } from '@mui/material'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -22,25 +23,54 @@ export default function LoginPage() {
       }
     } else if (data.user) {
       console.log('Logged in:', data)
-      router.push('/') // redirect efter login
+      router.push('/shop') // redirect efter login
     }
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-      <button type="submit">Login</button>
-    </form>
+    <Box sx={{ padding: "1rem", height: "100vh", alignContent: "center" }}>
+      <Typography sx={{ fontSize: "2.5rem", textAlign: "center" }}>Signup</Typography>
+      <form style={{ display: "grid", gap: "1rem" }} onSubmit={handleLogin}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          style={{ 
+            background: "transparent", 
+            padding: "1rem", 
+            border: "none", 
+            borderBottom: "1px solid white" 
+          }}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          style={{ 
+            background: "transparent", 
+            padding: "1rem", 
+            border: "none", 
+            borderBottom: "1px solid white" 
+          }}
+          onChange={e => setPassword(e.target.value)}
+        />
+
+        <Button
+          sx={{ 
+            padding: "1rem",
+            border: "none",
+            color: "white",
+            backgroundColor: "grey",
+            "&:hover": {
+              backgroundColor: "white",
+              color: "black"
+            },
+          }}  
+          type="submit">
+            Login
+          </Button>
+      </form>
+    </Box>
   )
 }

@@ -1,7 +1,7 @@
 
 
 import ForsideHero from "@/components/Forside";
-import NavMenu from "@/components/NavMenu";
+// import NavMenu from "@/components/NavMenu";
 import { Box } from "@mui/material";
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
         backgroundSize: "cover",         
         backgroundPosition: "center",     
       }}>
-        <NavMenu />
+        {/* <NavMenu /> */}
         <ForsideHero   />
     </Box>
   );
