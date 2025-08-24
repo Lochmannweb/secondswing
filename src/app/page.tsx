@@ -1,10 +1,20 @@
-// import Image from "next/image";
-// import styles from "./page.module.css";
+
+
+import ForsideHero from "@/components/Forside";
+import NavMenu from "@/components/NavMenu";
+import { Box } from "@mui/material";
 
 export default function Home() {
   return (
-    <>
-      <h1>Test</h1>
-    </>
+    <Box 
+      sx={{
+        height: "100vh", 
+        backgroundImage: `url(/hero.jpg)`,
+        backgroundSize: "cover",         
+        backgroundPosition: "center",     
+      }}>
+        <NavMenu />
+        <ForsideHero   />
+    </Box>
   );
 }
