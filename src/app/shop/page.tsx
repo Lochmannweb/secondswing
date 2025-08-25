@@ -1,7 +1,7 @@
 "use client"
 
 import { getSupabase } from "@/lib/supabaseClient"
-import { Box, Typography, Card, CardContent, CardMedia, Grid, Alert, CircularProgress } from "@mui/material"
+import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid } from "@mui/material"
 import { useState, useEffect } from "react"
 
 
@@ -69,7 +69,7 @@ export default function ShopPage() {
         <>
           <Grid container spacing={3}>
             {products.map((product) => (
-              <Grid item xs={12} sm={6} md={4} key={product.id}>
+              <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
                   {product.image_url && (
                     <CardMedia
