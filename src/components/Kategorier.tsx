@@ -21,7 +21,7 @@ function Kategorier() {
             <Stack sx={{ display: "grid", gap: "3rem", }}>
                 <Box sx={{ position: "relative",  }}>
                     <img
-                        src="/Golfsætold.jpg"
+                        src="/golfsætold.jpg"
                         alt="golf"
                         style={{
                             width: "80%",
@@ -69,7 +69,7 @@ function Kategorier() {
 
                 <Box sx={{ position: "relative",  }}>
                     <img
-                        src="/Golfforfemale.jpg"
+                        src="/golfforfemale.jpg"
                         alt="golf"
                         style={{
                             width: "80%",
@@ -117,7 +117,7 @@ function Kategorier() {
 
                 <Box sx={{ position: "relative",  }}>
                     <img
-                        src="/Golfformale2.jpg"
+                        src="/golfformale2.jpg"
                         alt="golf"
                         style={{
                             width: "80%",
