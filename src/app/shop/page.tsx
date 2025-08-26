@@ -1,9 +1,12 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { getSupabase } from "@/lib/supabaseClient"
-import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid } from "@mui/material"
-import { useState, useEffect } from "react"
-
+import SearchBar from "@/components/SearchBar"
+import AllProducts from "@/components/AllProducts"
+import { Alert, Box, CircularProgress } from "@mui/material"
+import FilterButtons from "@/components/FilterButtons"
+import { useSearchParams } from "next/navigation"
 
 interface Product {
   id: string
@@ -12,98 +15,83 @@ interface Product {
   price: number | null
   image_url: string | null
   created_at: string
+  gender: "male" | "female" | "unisex" | null
 }
 
-export default function ShopPage() {
+function ShopPage() {
+  const searchParams = useSearchParams()
+  const initialFilter = (searchParams.get("filter") as "all" | "female" | "male" | "unisex") || "all"
+
   const [products, setProducts] = useState<Product[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [activeFilter, setActiveFilter] = useState<"all" | "male" | "female" | "unisex">(initialFilter)
 
+  // hent produkter
   useEffect(() => {
-    const fetchAllProducts = async () => {
+    const fetchProducts = async () => {
       try {
         const supabase = getSupabase()
-
-        const { data: allProducts, error: productsError } = await supabase
+        const { data, error } = await supabase
           .from("products")
           .select("*")
           .order("created_at", { ascending: false })
 
-        if (productsError) {
-          throw new Error(`Kunne ikke hente produkter: ${productsError.message}`)
-        }
+        if (error) throw error
 
-        setProducts(allProducts || [])
+        setProducts(data || [])
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
-        setError(err.message || "Der opstod en fejl ved hentning af produkter")
+        setError(err.message)
       } finally {
         setLoading(false)
       }
     }
-
-    fetchAllProducts()
+    fetchProducts()
   }, [])
 
-  if (loading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-        <CircularProgress />
-      </Box>
-    )
+  // re-filter når produkter eller filter ændrer sig
+  useEffect(() => {
+    let results = [...products]
+
+    if (activeFilter !== "all") {
+      results = results.filter((p) => p.gender === activeFilter)
+    }
+
+    setFilteredProducts(results)
+  }, [products, activeFilter])
+
+  const handleSearch = (query: string) => {
+    let results = [...products]
+
+    if (activeFilter !== "all") {
+      results = results.filter((p) => p.gender === activeFilter)
+    }
+
+    if (query) {
+      results = results.filter((p) =>
+        p.title.toLowerCase().includes(query.toLowerCase())
+      )
+    }
+
+    setFilteredProducts(results)
   }
 
-  if (error) {
-    return (
-      <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>
-        <Alert severity="error">{error}</Alert>
-      </Box>
-    )
+  const handleFilter = (filter: "all" | "male" | "female" | "unisex") => {
+    setActiveFilter(filter)
   }
+
+  if (loading) return <CircularProgress />
+  if (error) return <Alert severity="error">{error}</Alert>
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: "auto", p: 2 }}>
-      {products.length === 0 ? (
-        <Alert severity="info">Der er ingen produkter tilgængelige i øjeblikket.</Alert>
-      ) : (
-        <>
-          <Grid container spacing={3}>
-            {products.map((product) => (
-              <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-                  {product.image_url && (
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={product.image_url}
-                      alt={product.title}
-                      sx={{ objectFit: "cover" }}
-                    />
-                  )}
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="h2" gutterBottom>
-                      {product.title}
-                    </Typography>
-                    {product.description && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                        {product.description}
-                      </Typography>
-                    )}
-                    {product.price && (
-                      <Typography variant="h6" color="primary">
-                        {product.price.toFixed(2)} DKK
-                      </Typography>
-                    )}
-                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
-                      Oprettet: {new Date(product.created_at).toLocaleDateString("da-DK")}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </>
-      )}
+    <Box sx={{ maxWidth: 1200, mx: "auto", p: 2, mb: "6rem" }}>
+      <SearchBar onSearch={handleSearch} />
+      <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilter} />
+      <AllProducts products={filteredProducts} />
     </Box>
   )
 }
+
+export default ShopPage

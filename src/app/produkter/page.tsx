@@ -1,7 +1,7 @@
 "use client"
 
 import { getSupabase } from "@/lib/supabaseClient"
-import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid } from "@mui/material"
+import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid, Divider } from "@mui/material"
 import { useState, useEffect } from "react"
 
 
@@ -77,14 +77,16 @@ export default function ProdukterPage() {
   }
 
   return (
-    <Box sx={{ padding: "1rem" }}>
+    <Box sx={{ padding: "1rem", mb: "6rem" }}>
+      <Typography sx={{ color: "white", fontSize: "1.2rem" }}>Mine produkter</Typography>
+      <Divider sx={{ mb: "3rem", backgroundColor: "white", width: "30%" }} />
       {products.length === 0 ? (
         <Alert severity="info">Du har ikke oprettet nogen produkter endnu.</Alert>
       ) : (
         <>
           <Grid container spacing={1} sx={{ justifySelf: "center" }}>
             {products.map((product) => (
-              <Grid key={product.id}>
+              <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
                   {product.image_url && (
                     <CardMedia

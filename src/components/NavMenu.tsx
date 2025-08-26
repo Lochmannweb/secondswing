@@ -105,6 +105,7 @@ export default function BasicMenu() {
             </>
           ) : (
             <>
+              <MenuItem onClick={handleShop}>Shop</MenuItem>
               <MenuItem onClick={handleLogin}>Login</MenuItem>
               <MenuItem onClick={handleSignup}>Signup</MenuItem>
             </>
