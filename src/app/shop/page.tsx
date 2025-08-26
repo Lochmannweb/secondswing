@@ -6,7 +6,6 @@ import SearchBar from "@/components/SearchBar"
 import AllProducts from "@/components/AllProducts"
 import { Alert, Box, CircularProgress } from "@mui/material"
 import FilterButtons from "@/components/FilterButtons"
-import { useSearchParams } from "next/navigation"
 
 interface Product {
   id: string
@@ -18,28 +17,23 @@ interface Product {
   gender: "male" | "female" | "unisex" | null
 }
 
-export default function ShopPageClientWrapper() {
-  // Wrapper sikrer, at ShopPage kun renderes på klienten
-  return <ShopPage />
-}
-
-function ShopPage() {
-  const searchParams = useSearchParams()
-  const [hasMounted, setHasMounted] = useState(false) // sikre client mount
-
-  const initialFilter = (searchParams?.get("filter") as "all" | "female" | "male" | "unisex") || "all"
-
+export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeFilter, setActiveFilter] = useState<"all" | "male" | "female" | "unisex">(initialFilter)
 
-  // sikre, at useSearchParams kun bruges efter mount
-  useEffect(() => {
-    setHasMounted(true)
-  }, [])
+  // initial filter uden useSearchParams
+  const getInitialFilter = (): "all" | "male" | "female" | "unisex" => {
+    if (typeof window === "undefined") return "all"
+    const params = new URLSearchParams(window.location.search)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (params.get("filter") as any) || "all"
+  }
 
+  const [activeFilter, setActiveFilter] = useState<"all" | "male" | "female" | "unisex">(getInitialFilter())
+
+  // hent produkter
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -61,12 +55,12 @@ function ShopPage() {
     fetchProducts()
   }, [])
 
+  // filtrer produkter
   useEffect(() => {
-    if (!hasMounted) return // vent til client mount
     let results = [...products]
     if (activeFilter !== "all") results = results.filter((p) => p.gender === activeFilter)
     setFilteredProducts(results)
-  }, [products, activeFilter, hasMounted])
+  }, [products, activeFilter])
 
   const handleSearch = (query: string) => {
     let results = [...products]
@@ -79,7 +73,6 @@ function ShopPage() {
     setActiveFilter(filter)
   }
 
-  if (!hasMounted) return null // vent til client mount
   if (loading) return <CircularProgress />
   if (error) return <Alert severity="error">{error}</Alert>
 
