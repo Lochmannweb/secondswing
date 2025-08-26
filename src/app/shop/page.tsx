@@ -18,9 +18,16 @@ interface Product {
   gender: "male" | "female" | "unisex" | null
 }
 
+export default function ShopPageClientWrapper() {
+  // Wrapper sikrer, at ShopPage kun renderes på klienten
+  return <ShopPage />
+}
+
 function ShopPage() {
   const searchParams = useSearchParams()
-  const initialFilter = (searchParams.get("filter") as "all" | "female" | "male" | "unisex") || "all"
+  const [hasMounted, setHasMounted] = useState(false) // sikre client mount
+
+  const initialFilter = (searchParams?.get("filter") as "all" | "female" | "male" | "unisex") || "all"
 
   const [products, setProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
@@ -28,7 +35,11 @@ function ShopPage() {
   const [error, setError] = useState<string | null>(null)
   const [activeFilter, setActiveFilter] = useState<"all" | "male" | "female" | "unisex">(initialFilter)
 
-  // hent produkter
+  // sikre, at useSearchParams kun bruges efter mount
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -39,7 +50,6 @@ function ShopPage() {
           .order("created_at", { ascending: false })
 
         if (error) throw error
-
         setProducts(data || [])
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
@@ -51,30 +61,17 @@ function ShopPage() {
     fetchProducts()
   }, [])
 
-  // re-filter når produkter eller filter ændrer sig
   useEffect(() => {
+    if (!hasMounted) return // vent til client mount
     let results = [...products]
-
-    if (activeFilter !== "all") {
-      results = results.filter((p) => p.gender === activeFilter)
-    }
-
+    if (activeFilter !== "all") results = results.filter((p) => p.gender === activeFilter)
     setFilteredProducts(results)
-  }, [products, activeFilter])
+  }, [products, activeFilter, hasMounted])
 
   const handleSearch = (query: string) => {
     let results = [...products]
-
-    if (activeFilter !== "all") {
-      results = results.filter((p) => p.gender === activeFilter)
-    }
-
-    if (query) {
-      results = results.filter((p) =>
-        p.title.toLowerCase().includes(query.toLowerCase())
-      )
-    }
-
+    if (activeFilter !== "all") results = results.filter((p) => p.gender === activeFilter)
+    if (query) results = results.filter((p) => p.title.toLowerCase().includes(query.toLowerCase()))
     setFilteredProducts(results)
   }
 
@@ -82,6 +79,7 @@ function ShopPage() {
     setActiveFilter(filter)
   }
 
+  if (!hasMounted) return null // vent til client mount
   if (loading) return <CircularProgress />
   if (error) return <Alert severity="error">{error}</Alert>
 
@@ -93,5 +91,3 @@ function ShopPage() {
     </Box>
   )
 }
-
-export default ShopPage
