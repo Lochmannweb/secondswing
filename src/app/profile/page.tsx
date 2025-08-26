@@ -158,6 +158,12 @@ export default function ProfilePage() {
               <Divider />
               <a href="/produkter">Produkter</a>
               <Divider />
+              <a href="#">Favoriter</a>
+              <Divider />
+              <a href="#">Indstillinger</a>
+              <Divider />
+              <a href="/about">Om Second Swing</a>
+              <Divider />
             </Box>
           </Box>
         </>
