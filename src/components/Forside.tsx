@@ -22,7 +22,7 @@ export default function ForsideHero() {
                         backgroundColor: "white",
                         color: "black",
                         borderRadius: "3rem",
-                        padding: "0.5rem 2rem",
+                        padding: "0.1rem 1.2rem",
                         top: "1rem"
                     }}
                     href="/auth/signup">Start nu</Button>

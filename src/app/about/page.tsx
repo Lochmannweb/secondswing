@@ -11,23 +11,32 @@ export default function Home() {
   return (
     <Box 
         sx={{ 
-            background: "white", 
+            // background: "white", 
             // color: "black", 
-            paddingBottom: "7rem",
-            width: "100%", 
-            backgroundImage: `url(/hero.jpg)`,
-            backgroundSize: "cover",         
-            backgroundPosition: "center", 
-        }}>
-        {/* <img 
+            // paddingBottom: "7rem",
+            // width: "100%", 
+            // backgroundImage: `url(/hero.jpg)`,
+            // backgroundSize: "cover",         
+            // backgroundPosition: "center", 
+        }}
+        >
+        <img 
             src="/hero.jpg" 
             alt="hero" 
             style={{
-                width: "100%"
+                width: "100%",
+                filter: "brightness(0.5)"
             }}
-        /> */}
+        />
         <AboutHero />
-        <Box sx={{ display: "grid", gap: "3rem", padding: "3rem 2rem 2rem 2rem", marginTop: "-1rem"  }}>
+        <Box 
+            sx={{ 
+                display: "grid", 
+                gap: "3rem", 
+                padding: "0rem 2rem 2rem 2rem", 
+                color: "black",
+                marginTop: "-2rem"
+            }}>
             <OurCompany />
             {/* <Divider sx={{ background: "grey", width: "80%", margin: "auto" }} /> */}
             <OurMission />  

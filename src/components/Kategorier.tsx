@@ -13,7 +13,7 @@ function Kategorier() {
 
     return (
         <Box sx={{ textAlign: "center", padding: "5rem 3rem 3rem 3rem", paddingBottom: "8rem" }}>
-            <Box sx={{ marginBottom: "2rem" }}>
+            <Box sx={{ marginBottom: "2rem", color: "black" }}>
                 <Typography variant="h5" style={{ marginBottom: "0px" }} gutterBottom>Golfudstyr til enhver spiller</Typography>
                 <p style={{ fontSize: "0.8rem" }}>Find din stil og dit spil</p>
             </Box>
@@ -49,7 +49,8 @@ function Kategorier() {
                             variant="contained"
                             sx={{ 
                                 borderRadius: "2rem", 
-                                backgroundColor: "grey",
+                                backgroundColor: "transparent",
+                                border: "1px solid grey",
                                 padding: "0.1rem", 
                                 width: "70%", 
                                 margin: "auto",
@@ -97,7 +98,8 @@ function Kategorier() {
                             variant="contained"
                             sx={{ 
                                 borderRadius: "2rem", 
-                                backgroundColor: "grey",
+                                backgroundColor: "transparent",
+                                border: "1px solid grey",
                                 padding: "0.1rem", 
                                 width: "70%", 
                                 margin: "auto",
@@ -145,7 +147,8 @@ function Kategorier() {
                             variant="contained"
                             sx={{ 
                                 borderRadius: "2rem", 
-                                backgroundColor: "grey",
+                                backgroundColor: "transparent",
+                                border: "1px solid grey",
                                 padding: "0.1rem", 
                                 width: "70%", 
                                 margin: "auto",

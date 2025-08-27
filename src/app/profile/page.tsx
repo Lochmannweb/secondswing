@@ -140,10 +140,14 @@ export default function ProfilePage() {
               backgroundColor: "white",
               padding: "1rem",
               color: "black",
+              width: "100%",
               borderTopLeftRadius: "2rem",
               borderTopRightRadius: "2rem",
               marginTop: "-2rem",
-              filter: "drop-shadow(2px 4px 6px black)"
+              filter: "drop-shadow(2px 4px 6px black)",
+              position: "fixed",
+              bottom: "0",
+              height: "68vh"
             }}
           >
             <Box sx={{ display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
@@ -152,7 +156,7 @@ export default function ProfilePage() {
                 <p>Send en besked</p>
               </div>
             </Box>
-            <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem" }}>
+            <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem", marginTop: "7rem" }}>
               <Divider />
               <a href="/opretProdukt">Opret produkt</a>
               <Divider />
