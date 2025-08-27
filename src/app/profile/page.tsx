@@ -151,10 +151,7 @@ export default function ProfilePage() {
             }}
           >
             <Box sx={{ display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <p>{profile.display_name ?? 'Ikke udfyldt'}</p>
-                <p>Send en besked</p>
-              </div>
             </Box>
             <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem", marginTop: "7rem" }}>
               <Divider />

@@ -14,6 +14,7 @@ interface Product {
   price: number | null
   image_url: string | null
   created_at: string
+  user_id: string
   gender: "male" | "female" | "unisex" | null
 }
 
@@ -22,22 +23,30 @@ export default function ShopPage() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [activeFilter, setActiveFilter] = useState<"all" | "male" | "female">("all")
 
-  // initial filter uden useSearchParams
-  const getInitialFilter = (): "all" | "male" | "female" | "unisex" => {
-    if (typeof window === "undefined") return "all"
+  // Læs filter fra URL ved mount
+  useEffect(() => {
+    if (typeof window === "undefined") return
     const params = new URLSearchParams(window.location.search)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (params.get("filter") as any) || "all"
-  }
+    const filter = params.get("filter")
+    if (filter === "male" || filter === "female" || filter === "all") {
+      setActiveFilter(filter)
+    }
+  }, [])
 
-  const [activeFilter, setActiveFilter] = useState<"all" | "male" | "female" | "unisex">(getInitialFilter())
-
-  // hent produkter
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const supabase = getSupabase()
+
+        // Hent logget ind bruger
+        const { data: sessionData } = await supabase.auth.getSession()
+        const loggedInUserId = sessionData.session?.user.id ?? null
+        setUserId(loggedInUserId)
+
+        // Hent alle produkter
         const { data, error } = await supabase
           .from("products")
           .select("*")
@@ -52,24 +61,26 @@ export default function ShopPage() {
         setLoading(false)
       }
     }
+
     fetchProducts()
   }, [])
 
-  // filtrer produkter
   useEffect(() => {
     let results = [...products]
-    if (activeFilter !== "all") results = results.filter((p) => p.gender === activeFilter)
+    if (userId) results = results.filter(p => p.user_id !== userId)
+    if (activeFilter !== "all") results = results.filter(p => p.gender === activeFilter)
     setFilteredProducts(results)
-  }, [products, activeFilter])
+  }, [products, activeFilter, userId])
 
   const handleSearch = (query: string) => {
     let results = [...products]
-    if (activeFilter !== "all") results = results.filter((p) => p.gender === activeFilter)
-    if (query) results = results.filter((p) => p.title.toLowerCase().includes(query.toLowerCase()))
+    if (userId) results = results.filter(p => p.user_id !== userId)
+    if (activeFilter !== "all") results = results.filter(p => p.gender === activeFilter)
+    if (query) results = results.filter(p => p.title.toLowerCase().includes(query.toLowerCase()))
     setFilteredProducts(results)
   }
 
-  const handleFilter = (filter: "all" | "male" | "female" | "unisex") => {
+  const handleFilter = (filter: "all" | "male" | "female") => {
     setActiveFilter(filter)
   }
 
@@ -77,7 +88,9 @@ export default function ShopPage() {
   if (error) return <Alert severity="error">{error}</Alert>
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: "auto", p: 2, mb: "6rem" }}>
+    <Box 
+      sx={{ maxWidth: 1200, mx: "auto", p: 2, pb: "6rem", backgroundColor: "black" }}
+    >
       <SearchBar onSearch={handleSearch} />
       <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilter} />
       <AllProducts products={filteredProducts} />

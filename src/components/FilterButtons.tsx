@@ -3,8 +3,8 @@
 import { Stack, Button } from "@mui/material"
 
 interface FilterButtonsProps {
-  activeFilter: "all" | "male" | "female" | "unisex"
-  onFilterChange: (filter: "all" | "male" | "female" | "unisex") => void
+  activeFilter: "all" | "male" | "female"
+  onFilterChange: (filter: "all" | "male" | "female") => void
 }
 
 export default function FilterButtons({ activeFilter, onFilterChange }: FilterButtonsProps) {
@@ -12,15 +12,13 @@ export default function FilterButtons({ activeFilter, onFilterChange }: FilterBu
     backgroundColor: activeFilter === filter ? 
       filter === "male" ? "#616161" : 
       filter === "female" ? "#616161" : 
-      filter === "unisex" ? "#616161" : 
       "#616161" 
       : "transparent",
     color: activeFilter === filter ? "white" : "#333",
     "&:hover": {
       backgroundColor: 
                       filter === "male" ? "#333" : 
-                      filter === "female" ? "#333" : 
-                      filter === "unisex" ? "#333" : "#333",
+                      filter === "female" ? "#333" : "#333",
       color: "white",
     },
   })
