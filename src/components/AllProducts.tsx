@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { 
   Typography, 
@@ -10,8 +10,12 @@ import {
   Grid, 
   Box, 
   Button,
-  Alert 
+  Alert, 
+  IconButton
 } from "@mui/material"
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import { supabase } from "@/lib/supabaseClient"
 
 interface Product {
   id: string
@@ -29,6 +33,51 @@ interface AllProductsProps {
 }
 
 export default function AllProducts({ products }: AllProductsProps) {
+  const [favorites, setFavorites] = useState<string[]>([])
+  const [userId, setUserId] = useState<string | null>(null)
+
+useEffect(() => {
+  const fetchFavorites = async () => {
+    const { data: userData } = await supabase.auth.getUser()
+    if (!userData.user) return
+    setUserId(userData.user.id)
+
+    const { data: favData, error } = await supabase
+      .from("favoriter")
+      .select("product_id")
+      .eq("user_id", userData.user.id)
+
+    if (error) console.error(error)
+    else setFavorites(favData.map(f => f.product_id))
+  }
+  fetchFavorites()
+}, [])
+
+const toggleFavorite = async (productId: string) => {
+  if (!userId) return
+
+  try {
+    if (favorites.includes(productId)) {
+      setFavorites(favorites.filter(id => id !== productId))
+      const { error } = await supabase
+        .from("favoriter")
+        .delete()
+        .eq("user_id", userId)
+        .eq("product_id", productId)
+      if (error) console.error("Fejl ved sletning:", error)
+    } else {
+      setFavorites([...favorites, productId])
+      const { error } = await supabase
+        .from("favoriter")
+        .insert([{ user_id: userId, product_id: productId }])
+      if (error) console.error("Fejl ved indsættelse:", error)
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+
   if (!products || products.length === 0) {
     return <Alert severity="info">Der er ingen produkter tilgængelige i øjeblikket.</Alert>
   }
@@ -41,24 +90,33 @@ export default function AllProducts({ products }: AllProductsProps) {
             {product.image_url && (
               <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
             )}
-            {product.price && (
-              <Typography
-                sx={{
-                  backgroundColor: "white",
-                  borderRadius: "3rem",
-                  fontSize: "0.8rem",
-                  width: "40%",
-                  textAlign: "center",
-                  alignSelf: "end",
-                  color: "black",
-                  position: "relative",
-                  top: "-12rem",
-                  right: "0.5rem",
-                }}
-              >
-                {product.price.toFixed(2)} DKK
-              </Typography>
-            )}
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              {product.price && (
+                <Typography
+                  sx={{
+                    backgroundColor: "white",
+                    borderRadius: "3rem",
+                    fontSize: "0.8rem",
+                    width: "40%",
+                    textAlign: "center",
+                    alignSelf: "end",
+                    color: "black",
+                    position: "relative",
+                    top: "-12rem",
+                    right: "0.5rem",
+                  }}
+                >
+                  {product.price.toFixed(2)} DKK
+                </Typography>
+              )}
+              <IconButton
+                onClick={() => toggleFavorite(product.id)}
+                sx={{ 
+                  color: favorites.includes(product.id) ? 'white' : 'white',   
+                  top: "-11.5rem", }}>
+                {favorites.includes(product.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              </IconButton>
+            </Box>
             <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "-1rem" }}>
                 <Typography sx={{ fontSize: "18px" }} component="h2">

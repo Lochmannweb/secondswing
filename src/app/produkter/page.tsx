@@ -77,14 +77,14 @@ export default function ProdukterPage() {
   }
 
   return (
-    <Box sx={{ padding: "1rem", mb: "6rem" }}>
+    <Box sx={{ padding: "1rem", backgroundColor: "black", height: "100vh" }}>
       <Typography sx={{ color: "white", fontSize: "1.2rem" }}>Mine produkter</Typography>
       <Divider sx={{ mb: "3rem", backgroundColor: "white", width: "30%" }} />
       {products.length === 0 ? (
         <Alert severity="info">Du har ikke oprettet nogen produkter endnu.</Alert>
       ) : (
         <>
-          <Grid container spacing={1} sx={{ justifySelf: "center" }}>
+          <Grid spacing={1} sx={{ justifySelf: "start" }}>
             {products.map((product) => (
               <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>

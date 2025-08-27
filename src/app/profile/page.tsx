@@ -155,11 +155,13 @@ export default function ProfilePage() {
             </Box>
             <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem", marginTop: "7rem" }}>
               <Divider />
+              <a href="/chatHistory">Besked historik</a>
+              <Divider />
               <a href="/opretProdukt">Opret produkt</a>
               <Divider />
               <a href="/produkter">Produkter</a>
               <Divider />
-              <a href="#">Favoriter</a>
+              <a href="favoriter">Favoriter</a>
               <Divider />
               <a href="#">Indstillinger</a>
               <Divider />
