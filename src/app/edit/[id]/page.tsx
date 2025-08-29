@@ -91,6 +91,7 @@ export default function EditProductPage() {
 
       if (error) throw error
       setMessage({ type: "success", text: "Produkt opdateret succesfuldt!" })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setMessage({ type: "error", text: error.message || "Der opstod en fejl" })
     } finally {
