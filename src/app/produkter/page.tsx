@@ -1,7 +1,8 @@
 "use client"
 
 import { getSupabase } from "@/lib/supabaseClient"
-import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid, Divider } from "@mui/material"
+import { Box, Typography, Card, CardContent, CardMedia, Alert, CircularProgress, Grid, Divider, Button, IconButton } from "@mui/material"
+import Link from "next/link"
 import { useState, useEffect } from "react"
 
 
@@ -77,43 +78,64 @@ export default function ProdukterPage() {
   }
 
   return (
-    <Box sx={{ padding: "1rem", backgroundColor: "black", height: "100vh" }}>
-      <Typography sx={{ color: "white", fontSize: "1.2rem" }}>Mine produkter</Typography>
-      <Divider sx={{ mb: "3rem", backgroundColor: "white", width: "30%" }} />
+    <Box sx={{ padding: "1rem", color: "black", }}>
+      <Typography sx={{ fontSize: "1.2rem" }}>Mine produkter</Typography>
+      <Divider sx={{ mb: "3rem", backgroundColor: "black", width: "30%" }} />
       {products.length === 0 ? (
         <Alert severity="info">Du har ikke oprettet nogen produkter endnu.</Alert>
       ) : (
         <>
-          <Grid spacing={1} sx={{ justifySelf: "start" }}>
+          <Grid container spacing={1} sx={{ justifySelf: "start" }}>
             {products.map((product) => (
-              <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+              <Grid key={product.id} size={{ xs: 6, sm: 6, md: 4 }}>
+                <Card sx={{ color: "black", height: "100%" }}>
                   {product.image_url && (
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={product.image_url}
-                      alt={product.title}
-                      sx={{ objectFit: "cover" }}
-                    />
+                    <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
                   )}
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="h2" gutterBottom>
-                      {product.title}
-                    </Typography>
-                    {product.description && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                        {product.description}
-                      </Typography>
-                    )}
+                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     {product.price && (
-                      <Typography variant="h6" color="primary">
+                      <Typography
+                        sx={{
+                          backgroundColor: "white",
+                          borderRadius: "3rem",
+                          fontSize: "0.8rem",
+                          width: "40%",
+                          textAlign: "center",
+                          alignSelf: "end",
+                          color: "black",
+                          position: "relative",
+                          top: "-12rem",
+                          right: "0.5rem",
+                        }}
+                      >
                         {product.price.toFixed(2)} DKK
                       </Typography>
                     )}
-                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
-                      Oprettet: {new Date(product.created_at).toLocaleDateString("da-DK")}
-                    </Typography>
+                  </Box>
+                  <CardContent>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "-1rem" }}>
+                      <Typography sx={{ fontSize: "18px" }} component="h2">
+                        {product.title}
+                      </Typography>
+                    </Box>
+                    {product.description && (
+                      <Typography variant="body2" sx={{ mb: 2, fontSize: "13px" }}>
+                        {product.description}
+                      </Typography>
+                    )}
+                    <Button 
+                      component={Link}
+                      href={`/edit/${product.id}`}
+                      sx={{ 
+                        display: "flex", 
+                        justifySelf: "end", 
+                        fontSize: "0.7rem",
+                        color: "black",
+                        border: "1px solid gray",
+                        padding: "0 1rem"
+                      }}>
+                      Ændre
+                    </Button>
                   </CardContent>
                 </Card>
               </Grid>

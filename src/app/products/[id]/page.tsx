@@ -58,7 +58,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
             color: "white",
             borderRadius: "3rem",
             padding: "0.5rem 1rem"
-          }} href={`/chat/${product.owner_id}`}>
+          }} 
+          href={`/chat/${product.id}`}
+          >
             Start chat
           </a>
         </Box>

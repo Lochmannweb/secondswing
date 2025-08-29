@@ -163,7 +163,7 @@ export default function ProfilePage() {
               <Divider />
               <a href="favoriter">Favoriter</a>
               <Divider />
-              <a href="#">Indstillinger</a>
+              <a href="indstillinger">Indstillinger</a>
               <Divider />
               <a href="/about">Om Second Swing</a>
               <Divider />
