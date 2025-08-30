@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabaseClient"
-import { Box, Button, Divider } from "@mui/material"
+import { Box, Button, Divider, MenuItem } from "@mui/material"
 // import createClient from "@supabase/supabase-js"
 
 interface ProductPageProps {
@@ -53,19 +53,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
             alignItems: "center"
           }}>
           <p>{ownerName}</p>
-          <a style={{
-            backgroundColor: "black",
-            color: "white",
-            borderRadius: "3rem",
-            padding: "0.5rem 1rem"
+          <Button style={{
+            // border: "1px solid black",
+            // borderRadius: "3rem",
+            // padding: "0.1rem 1rem",
+            cursor: "pointer",
+            color: "black"
           }} 
           href={`/chat/${product.id}`}
           >
             Start chat
-          </a>
+          </Button>
         </Box>
 
-        <Divider sx={{ backgroundColor: "black", width: "100%", justifySelf: "center", mt: 3, mb: 3 }} />
+        <Divider sx={{ backgroundColor: "black", width: "100%", justifySelf: "center", mb: 3 }} />
 
         <Box 
           sx={{ 
@@ -89,10 +90,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <Button 
           sx={{ 
             width: "100%", 
-            backgroundColor: "black", 
+            backgroundColor: "gray", 
             color: "white", 
             position: "relative",
-            bottom: "-3rem"
+            bottom: "-3rem",
+            "&:hover": {
+              backgroundColor: "black",
+              color: "white"
+            }
             }}>
               Køb
         </Button>
