@@ -97,12 +97,13 @@ const toggleFavorite = async (productId: string) => {
                     backgroundColor: "white",
                     borderRadius: "3rem",
                     fontSize: "0.8rem",
-                    width: "40%",
+                    width: "70%",
                     textAlign: "center",
                     alignSelf: "end",
                     color: "black",
                     position: "relative",
                     top: "-12rem",
+                    padding: "0 1rem",
                     right: "0.5rem",
                   }}
                 >
@@ -118,24 +119,13 @@ const toggleFavorite = async (productId: string) => {
               </IconButton>
             </Box>
             <CardContent>
-              <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "-1rem" }}>
-                <Typography sx={{ fontSize: "18px" }} component="h2">
+              <Box 
+                sx={{ 
+                  marginTop: "-3rem" 
+                }}>
+                <Typography sx={{ fontSize: "15px" }} component="h2">
                   {product.title}
                 </Typography>
-                <Button
-                  component={Link}
-                  href={`/products/${product.id}`}
-                  sx={{
-                    fontSize: "10px",
-                    border: "1px solid grey",
-                    borderRadius: "3rem",
-                    width: "40%",
-                    color: "black",
-                    "&:hover": { backgroundColor: "grey", color: "white" },
-                  }}
-                >
-                  See More
-                </Button>
               </Box>
               {product.description && (
                 <Typography variant="body2" sx={{ mb: 2, fontSize: "13px" }}>
@@ -143,6 +133,24 @@ const toggleFavorite = async (productId: string) => {
                 </Typography>
               )}
             </CardContent>
+            <Button
+                  component={Link}
+                  href={`/products/${product.id}`}
+                  sx={{
+                    fontSize: "10px",
+                    border: "1px solid grey",
+                    borderRadius: "0.5rem",
+                    width: "90%",
+                    color: "black",
+                    display: "flex",
+                    marginBottom: "0.5rem",
+                    justifySelf: "center",
+                    padding: "0.3rem 1rem",
+                    "&:hover": { backgroundColor: "black", color: "white" },
+                  }}
+                >
+                  See More
+            </Button>
           </Card>
         </Grid>
       ))}

@@ -10,17 +10,17 @@ interface FilterButtonsProps {
 export default function FilterButtons({ activeFilter, onFilterChange }: FilterButtonsProps) {
   const buttonStyles = (filter: string) => ({
     backgroundColor: activeFilter === filter ? 
-      filter === "male" ? "#616161" : 
-      filter === "female" ? "#616161" : 
-      "#616161" 
+      filter === "male" ? "black" : 
+      filter === "female" ? "black" : 
+      "black" 
       : "transparent",
-    color: activeFilter === filter ? "white" : "#333",
+    color: activeFilter === filter ? "white" : "black",
     border: "1px solid #616161",
     "&:hover": {
       backgroundColor: 
-                      filter === "male" ? "#333" : 
-                      filter === "female" ? "#333" : "#333",
-      color: "white",
+                      filter === "male" ? "lightgray" : 
+                      filter === "female" ? "lightgray" : "lightgray",
+      // color: "white",
     },
   })
 

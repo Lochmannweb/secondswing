@@ -11,13 +11,7 @@ export default function Home() {
   return (
     <Box 
         sx={{ 
-            // background: "white", 
-            // color: "black", 
             paddingBottom: "7rem",
-            // width: "100%", 
-            // backgroundImage: `url(/hero.jpg)`,
-            // backgroundSize: "cover",         
-            // backgroundPosition: "center", 
         }}
         >
         <img 
@@ -38,11 +32,8 @@ export default function Home() {
                 marginTop: "-2rem"
             }}>
             <OurCompany />
-            {/* <Divider sx={{ background: "grey", width: "80%", margin: "auto" }} /> */}
             <OurMission />  
-            {/* <Divider sx={{ background: "grey", width: "80%", margin: "auto" }} /> */}
             <WhyUs />  
-            {/* <Divider sx={{ background: "grey", width: "80%", margin: "auto" }} /> */}
             <OurTeam />  
         </Box>
     </Box>
