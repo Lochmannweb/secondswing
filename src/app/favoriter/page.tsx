@@ -115,7 +115,7 @@ export default function Favoriter() {
               sx={{
                 position: "absolute",
                 top: 8,
-                right: 8,
+                right: 4,
                 color: "white",
               }}
             >
@@ -127,20 +127,6 @@ export default function Favoriter() {
                 <Typography sx={{ fontSize: "18px" }} component="h2">
                   {product.title}
                 </Typography>
-                <Button
-                  component={Link}
-                  href={`/products/${product.id}`}
-                  sx={{
-                    fontSize: "10px",
-                    border: "1px solid grey",
-                    borderRadius: "3rem",
-                    width: "40%",
-                    color: "black",
-                    "&:hover": { backgroundColor: "black", color: "white" },
-                  }}
-                >
-                  See More
-                </Button>
               </Box>
               {product.price && (
                 <Typography
@@ -148,13 +134,14 @@ export default function Favoriter() {
                     backgroundColor: "white",
                     borderRadius: "3rem",
                     fontSize: "0.8rem",
-                    width: "40%",
+                    width: "100%",
                     textAlign: "center",
                     alignSelf: "end",
                     color: "black",
                     position: "relative",
-                    top: "-13.3rem",
-                    left: "-1.5rem"
+                    top: "-14rem",
+                    padding: "0 1rem",
+                    left: "-2rem",
                   }}
                 >
                   {product.price.toFixed(2)} DKK
@@ -166,6 +153,26 @@ export default function Favoriter() {
                 </Typography>
               )}
             </CardContent>
+            <Button
+                  component={Link}
+                  href={`/products/${product.id}`}
+                  sx={{ 
+                    width: "80%", 
+                    backgroundColor: "gray", 
+                    color: "white", 
+                    display: "flex",
+                    justifySelf: "center",
+                    marginBottom: "1rem",
+                    padding: "0.3rem 1rem",
+                    fontSize: "10px",
+                    "&:hover": {
+                      backgroundColor: "black",
+                      color: "white"
+                    }
+                  }}
+                >
+                  See More
+            </Button>
           </Card>
         </Grid>
       ))}

@@ -2,10 +2,10 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import Menu from '@mui/material/Menu'
+// import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { supabase } from '@/lib/supabaseClient'
-import MenuIcon from '@mui/icons-material/Menu'
+// import MenuIcon from '@mui/icons-material/Menu'
 import { Box, Link } from '@mui/material'
 import { useState, useEffect } from 'react'
 
@@ -30,9 +30,9 @@ export default function BasicMenu() {
     }
   }, [])
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+  // const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  //   setAnchorEl(event.currentTarget)
+  // }
 
   const handleClose = () => setAnchorEl(null)
 
@@ -41,27 +41,37 @@ export default function BasicMenu() {
     handleClose()
   }
 
+  const handleChatHistory = () => {
+    router.push('/chat')
+    handleClose()
+  }
+
+  const handleFav = () => {
+    router.push('/favoriter')
+    handleClose()
+  }
+
   const handleShop = () => {
     router.push('/shop')
     handleClose()
   }
 
-  const handleLogin = () => {
-    router.push('/auth/login')
-    handleClose()
-  }
+  // const handleLogin = () => {
+  //   router.push('/auth/login')
+  //   handleClose()
+  // }
 
-  const handleSignup = () => {
-    router.push('/auth/signup')
-    handleClose()
-  }
+  // const handleSignup = () => {
+  //   router.push('/auth/signup')
+  //   handleClose()
+  // }
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setIsLoggedIn(false)
-    handleClose()
-    router.push('/shop')   // redirect efter logout
-  }
+  // const handleLogout = async () => {
+  //   await supabase.auth.signOut()
+  //   setIsLoggedIn(false)
+  //   handleClose()
+  //   router.push('/shop')   // redirect efter logout
+  // }
 
   return (
     <>
@@ -71,7 +81,7 @@ export default function BasicMenu() {
           alignItems: "center",
           width: "100%",
           justifyContent: "space-around",
-          padding: "0.3rem",
+          padding: "0.3rem 1rem",
           position: "fixed",
           bottom: 0,
           backgroundColor: "white",
@@ -80,9 +90,11 @@ export default function BasicMenu() {
           zIndex: 15,
           filter: "drop-shadow(2px 4px 6px black)"
         }}>
-          <MenuItem onClick={handleShop}><img src="/home.png" alt='logo' width={30}/></MenuItem>
-          <Link href="/"><img src="/logo.webp" alt='logo' width={40}/></Link>
-          <MenuItem onClick={handleProfile}><img src="/user.png" alt='logo' width={29}/></MenuItem>
+          <Link href="/"><img src="/logo.webp" alt='logo' width={30}/></Link>
+          <MenuItem onClick={handleShop}><img src="/home.png" alt='logo' width={20}/></MenuItem>
+          <MenuItem onClick={handleChatHistory}><img src="/comment.png" alt='logo' width={20}/></MenuItem>
+          <MenuItem onClick={handleFav}><img src="/heart.png" alt='logo' width={20}/></MenuItem>
+          <MenuItem onClick={handleProfile}><img src="/user.png" alt='logo' width={19}/></MenuItem>
       </Box>
     </>
   )

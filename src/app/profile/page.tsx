@@ -3,7 +3,7 @@
 import { supabase } from '@/lib/supabaseClient'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Box, Button, Divider } from '@mui/material'
+import { Box, Divider } from '@mui/material'
 
 type UserProfile = {
   id: string
@@ -17,6 +17,9 @@ export default function ProfilePage() {
   const router = useRouter()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+
+  console.log("profile: ", profile);
+  
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -46,8 +49,8 @@ export default function ProfilePage() {
       setProfile({
         id: user.id,
         email: user.email!,
-        display_name: profileData?.display_name ?? null,
-        phone: profileData?.phone ?? null,
+        display_name: user.user_metadata?.display_name ?? null,
+        phone: user.user_metadata?.phone ?? null,
         avatar_url: profileData?.avatar_url ?? null,
       })
 
@@ -64,7 +67,7 @@ export default function ProfilePage() {
     <Box sx={{ padding: 0 }}>
       {profile ? (
         <>
-          <Box sx={{ position: "relative", height: 120 }}>
+          <Box>
             <img
               src={profile.avatar_url || "/placeholderprofile.jpg"}
               alt="Profilbillede"
@@ -82,11 +85,11 @@ export default function ProfilePage() {
               width: "100%",
               borderTopLeftRadius: "2rem",
               borderTopRightRadius: "2rem",
-              marginTop: "-2rem",
+              // Top: "5rem",
               filter: "drop-shadow(2px 4px 6px black)",
-              position: "fixed",
-              bottom: "0",
-              height: "50vh"
+              position: "absolute",
+              bottom: "1rem",
+              // height: "50vh"
             }}
           >
             <Box sx={{ display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
@@ -94,13 +97,9 @@ export default function ProfilePage() {
             </Box>
             <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
               <Divider />
-              <a href="/chatHistory">Besked historik</a>
-              <Divider />
               <a href="/opretProdukt">Opret produkt</a>
               <Divider />
               <a href="/produkter">Produkter</a>
-              <Divider />
-              <a href="favoriter">Favoriter</a>
               <Divider />
               <a href="indstillinger">Indstillinger</a>
               <Divider />
