@@ -44,7 +44,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         />
       )}
 
-      <Box sx={{ padding: "1rem 3rem" }}>
+      <Box sx={{ padding: "1rem" }}>
         <Box 
           sx={{ 
             color: "black", 
@@ -65,7 +65,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </a>
         </Box>
 
-        <Divider sx={{ backgroundColor: "black", width: "80%", justifySelf: "center", mt: 3, mb: 3 }} />
+        <Divider sx={{ backgroundColor: "black", width: "100%", justifySelf: "center", mt: 3, mb: 3 }} />
 
         <Box 
           sx={{ 
@@ -86,7 +86,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <p>Tilstand: {product.stand}</p>
         </Box>
 
-        <Button sx={{ width: "100%", backgroundColor: "black", color: "white", mt: 5 }}>Køb</Button>
+        <Button 
+          sx={{ 
+            width: "100%", 
+            backgroundColor: "black", 
+            color: "white", 
+            position: "relative",
+            bottom: "-3rem"
+            }}>
+              Køb
+        </Button>
       </Box>
     </Box>
   )

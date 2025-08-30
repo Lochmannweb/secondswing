@@ -86,13 +86,13 @@ export default function ProfilePage() {
               filter: "drop-shadow(2px 4px 6px black)",
               position: "fixed",
               bottom: "0",
-              height: "68vh"
+              height: "50vh"
             }}
           >
             <Box sx={{ display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
               <p>{profile.display_name ?? 'Ikke udfyldt'}</p>
             </Box>
-            <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem", marginTop: "7rem" }}>
+            <Box sx={{ padding: "2rem 0", display: "grid", gap: "0.5rem", marginTop: "1rem" }}>
               <Divider />
               <a href="/chatHistory">Besked historik</a>
               <Divider />
