@@ -35,12 +35,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   return (
-    <Box>
+    <Box sx={{ paddingBottom: "6rem" }}>
       {product.image_url && (
         <img
           src={product.image_url}
           alt={product.title}
-          style={{ width: "100%" }}
+          style={{ width: "100%"
+           }}
         />
       )}
 
@@ -92,8 +93,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
             width: "100%", 
             backgroundColor: "gray", 
             color: "white", 
+            top: "1.5rem",
             position: "relative",
-            bottom: "-3rem",
             "&:hover": {
               backgroundColor: "black",
               color: "white"
