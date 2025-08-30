@@ -33,6 +33,7 @@ function Indstillinger() {
             Profiloplysninger
           </a>
         <a 
+          href='/indstillinger/kontooplysninger'
           style={{ 
             padding: "0rem 1rem 1rem 1rem",
             borderBottom: "1px solid black",
@@ -41,6 +42,7 @@ function Indstillinger() {
             Kontooplysninger
           </a>
         <a 
+          href='/indstillinger/betalinger'
           style={{ 
             padding: "0rem 1rem 1rem 1rem",
             borderBottom: "1px solid black",
@@ -49,6 +51,7 @@ function Indstillinger() {
             Betalinger
           </a>
         <a 
+          href='/indstillinger/Sikkerhed'
           style={{ 
             padding: "0rem 1rem 1rem 1rem",
             borderBottom: "1px solid black",

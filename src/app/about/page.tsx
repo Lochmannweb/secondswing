@@ -13,7 +13,7 @@ export default function Home() {
         sx={{ 
             // background: "white", 
             // color: "black", 
-            // paddingBottom: "7rem",
+            paddingBottom: "7rem",
             // width: "100%", 
             // backgroundImage: `url(/hero.jpg)`,
             // backgroundSize: "cover",         

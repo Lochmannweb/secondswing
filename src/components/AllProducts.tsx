@@ -86,7 +86,7 @@ const toggleFavorite = async (productId: string) => {
     <Grid container spacing={2}>
       {products.map((product) => (
         <Grid size={{ xs: 6, sm: 6, md: 4 }} key={product.id}>
-          <Card sx={{ backgroundColor: "black", color: "white", height: "100%" }}>
+          <Card sx={{ height: "100%" }}>
             {product.image_url && (
               <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
             )}
@@ -130,8 +130,8 @@ const toggleFavorite = async (productId: string) => {
                     border: "1px solid grey",
                     borderRadius: "3rem",
                     width: "40%",
-                    color: "white",
-                    "&:hover": { backgroundColor: "white", color: "black" },
+                    color: "black",
+                    "&:hover": { backgroundColor: "grey", color: "white" },
                   }}
                 >
                   See More

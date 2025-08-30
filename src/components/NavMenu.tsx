@@ -70,8 +70,8 @@ export default function BasicMenu() {
           display: "flex",
           alignItems: "center",
           width: "100%",
-          justifyContent: "space-between",
-          padding: "1rem",
+          justifyContent: "space-around",
+          padding: "0.3rem",
           position: "fixed",
           bottom: 0,
           backgroundColor: "white",
@@ -80,38 +80,39 @@ export default function BasicMenu() {
           zIndex: 15,
           filter: "drop-shadow(2px 4px 6px black)"
         }}>
-          <Link href="/"><img src="/logo.webp" alt='logo' width={50}/></Link>
-          <Box onClick={handleClick}>
-            <MenuIcon sx={{ color: "black", cursor: "pointer", marginRight: "0.5rem" }} />
-          </Box>
+          <MenuItem onClick={handleShop}><img src="/home.png" alt='logo' width={30}/></MenuItem>
+          <Link href="/"><img src="/logo.webp" alt='logo' width={40}/></Link>
+          <MenuItem onClick={handleProfile}><img src="/user.png" alt='logo' width={29}/></MenuItem>
       </Box>
-
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        slotProps={{ list: { 'aria-labelledby': 'basic-button' } }}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        sx={{ zIndex: 10, top: "-2rem", filter: "none", marginLeft: "1rem" }}
-        PaperProps={{ sx: { width: "100vw", maxWidth: "100vw", paddingBottom: "2rem" } }}
-      >
-        <Box>
-          {isLoggedIn ? (
-            <>
-              <MenuItem onClick={handleProfile}>Profile</MenuItem>
-              <MenuItem onClick={handleShop}>Shop</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            </>
-          ) : (
-            <>
-              <MenuItem onClick={handleShop}>Shop</MenuItem>
-              <MenuItem onClick={handleLogin}>Login</MenuItem>
-              <MenuItem onClick={handleSignup}>Signup</MenuItem>
-            </>
-          )}
-        </Box>
-      </Menu>
     </>
   )
 }
+
+
+
+      // <Menu
+      //   id="basic-menu"
+      //   anchorEl={anchorEl}
+      //   open={Boolean(anchorEl)}
+      //   onClose={handleClose}
+      //   slotProps={{ list: { 'aria-labelledby': 'basic-button' } }}
+      //   anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      //   sx={{ zIndex: 10, top: "-2rem", filter: "none", marginLeft: "1rem" }}
+      //   PaperProps={{ sx: { width: "100vw", maxWidth: "100vw", paddingBottom: "2rem" } }}
+      // >
+      //   <Box>
+      //     {isLoggedIn ? (
+      //       <>
+      //         <MenuItem onClick={handleProfile}>Profile</MenuItem>
+      //         <MenuItem onClick={handleShop}>Shop</MenuItem>
+      //         <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      //       </>
+      //     ) : (
+      //       <>
+      //         <MenuItem onClick={handleShop}>Shop</MenuItem>
+      //         <MenuItem onClick={handleLogin}>Login</MenuItem>
+      //         <MenuItem onClick={handleSignup}>Signup</MenuItem>
+      //       </>
+      //     )}
+      //   </Box>
+      // </Menu>

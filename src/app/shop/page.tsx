@@ -89,7 +89,7 @@ export default function ShopPage() {
 
   return (
     <Box 
-      sx={{ maxWidth: 1200, mx: "auto", p: 2, pb: "6rem", backgroundColor: "black" }}
+      sx={{ maxWidth: 1200, mx: "auto", p: 2, pb: "6rem" }}
     >
       <SearchBar onSearch={handleSearch} />
       <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilter} />
