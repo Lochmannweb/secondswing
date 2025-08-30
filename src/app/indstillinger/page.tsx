@@ -24,6 +24,7 @@ function Indstillinger() {
       <Box sx={{ display: "grid", gap: "1rem" }}>
         <Divider sx={{ backgroundColor: "black" }} />
         <a 
+          href='/indstillinger/profiloplysninger'
           style={{ 
             padding: "0rem 1rem 1rem 1rem",
             borderBottom: "1px solid black",
