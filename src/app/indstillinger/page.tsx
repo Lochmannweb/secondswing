@@ -1,31 +1,76 @@
-import { Box, Divider, Typography } from '@mui/material'
-import React from 'react'
+'use client'
 
-function indstillinger() {
+import React, { useState } from 'react'
+import { Box, Divider, MenuItem, Typography } from '@mui/material'
+import { supabase } from '@/lib/supabaseClient'
+import { useRouter } from 'next/navigation'
+
+function Indstillinger() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setIsLoggedIn(false)
+    router.push('/') // redirect til homepage
+  }
+
   return (
-    <Box sx={{ padding: "1rem", color: "black" }}>
-        <Typography><strong>Indstillinger</strong></Typography>
-        {/* <Divider sx={{ backgroundColor: "black", width: "50%" }} /> */}
+    <Box sx={{ color: "black" }}>
+      <Typography sx={{ padding: "1rem" }}>
+        <strong>Indstillinger</strong>
+      </Typography>
 
-        <Box sx={{ marginTop: "1rem", display: "grid", gap: "1rem" }}>
-            <Divider sx={{ backgroundColor: "black", width: "100%" }} />
-            <Typography>Profiloplysninger</Typography>
-            <Divider sx={{ backgroundColor: "black", width: "100%" }} />
-            <Typography>Kontooplysninger</Typography>
-            <Divider sx={{ backgroundColor: "black", width: "100%" }} />
-            <Typography>Betalinger</Typography>
-            <Divider sx={{ backgroundColor: "black", width: "100%" }} />
-            <Typography>Sikkerhed</Typography>
-            <Divider sx={{ backgroundColor: "black", width: "100%" }} />
-        </Box>
+      <Box sx={{ display: "grid", gap: "1rem" }}>
+        <Divider sx={{ backgroundColor: "black" }} />
+        <a 
+          style={{ 
+            padding: "0rem 1rem 1rem 1rem",
+            borderBottom: "1px solid black",
+            cursor: "pointer" 
+          }}>
+            Profiloplysninger
+          </a>
+        <a 
+          style={{ 
+            padding: "0rem 1rem 1rem 1rem",
+            borderBottom: "1px solid black",
+            cursor: "pointer" 
+          }}>
+            Kontooplysninger
+          </a>
+        <a 
+          style={{ 
+            padding: "0rem 1rem 1rem 1rem",
+            borderBottom: "1px solid black",
+            cursor: "pointer" 
+          }}>
+            Betalinger
+          </a>
+        <a 
+          style={{ 
+            padding: "0rem 1rem 1rem 1rem",
+            borderBottom: "1px solid black",
+            cursor: "pointer",
+          }}>
+            Sikkerhed
+          </a>
+      </Box>
 
-        <Box sx={{ marginTop: "5rem" }}>
-            <Divider sx={{ backgroundColor: "black", width: "100%" }} />
-            <Typography sx={{ padding: "1rem 0" }}>Log ud</Typography>
-            <Divider sx={{ backgroundColor: "black", width: "100%" }} />
-        </Box>
+      <Box sx={{ marginTop: "5rem" }}>
+          <MenuItem 
+            onClick={handleLogout} 
+            style={{ 
+              padding: "1rem", 
+              cursor: "pointer", 
+              borderTop: "1px solid black", 
+              borderBottom: "1px solid black" 
+            }}>
+            Log ud
+          </MenuItem>
+      </Box>
     </Box>
   )
 }
 
-export default indstillinger
+export default Indstillinger
