@@ -9,6 +9,8 @@ export default function Profiloplysninger() {
   const [imagePreview, setImagePreview] = useState<string>("/placeholderprofile.jpg")
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+  const [displayName, setDisplayName] = useState<string>("")
+  
 
   // Hent profilens avatar_url når siden loader
   useEffect(() => {
@@ -19,12 +21,13 @@ export default function Profiloplysninger() {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("avatar_url")
+        .select("avatar_url, display_name")
         .eq("id", user.id)
         .single()
 
       if (!error && data?.avatar_url) {
         setImagePreview(data.avatar_url)
+        if (data.display_name) setDisplayName(data.display_name)
       }
     }
 
@@ -140,7 +143,8 @@ export default function Profiloplysninger() {
                     borderBottom: "1px solid grey",
                     cursor: "pointer" 
                 }}>
-                    Brugernavn: {/* {profile.display_name} */}</Typography>
+                    Brugernavn: {  }
+            </Typography>
             <Typography
                 sx={{ 
                     padding: "1rem 0rem 1rem 0rem",
