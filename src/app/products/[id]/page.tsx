@@ -44,7 +44,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <p>{profileDisplayName}</p>
           <Button
             style={{ cursor: "pointer", color: "black" }}
-            href={`/chat/${product.user_id}`}
+            href={`/chat/product/${product.id}`}
           >
             Start chat
           </Button>

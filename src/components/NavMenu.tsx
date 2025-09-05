@@ -30,10 +30,6 @@ export default function BasicMenu() {
     }
   }, [])
 
-  // const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-  //   setAnchorEl(event.currentTarget)
-  // }
-
   const handleClose = () => setAnchorEl(null)
 
   const handleProfile = () => {
@@ -55,23 +51,6 @@ export default function BasicMenu() {
     router.push('/shop')
     handleClose()
   }
-
-  // const handleLogin = () => {
-  //   router.push('/auth/login')
-  //   handleClose()
-  // }
-
-  // const handleSignup = () => {
-  //   router.push('/auth/signup')
-  //   handleClose()
-  // }
-
-  // const handleLogout = async () => {
-  //   await supabase.auth.signOut()
-  //   setIsLoggedIn(false)
-  //   handleClose()
-  //   router.push('/shop')   // redirect efter logout
-  // }
 
   return (
     <>
@@ -100,31 +79,3 @@ export default function BasicMenu() {
   )
 }
 
-
-
-      // <Menu
-      //   id="basic-menu"
-      //   anchorEl={anchorEl}
-      //   open={Boolean(anchorEl)}
-      //   onClose={handleClose}
-      //   slotProps={{ list: { 'aria-labelledby': 'basic-button' } }}
-      //   anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      //   sx={{ zIndex: 10, top: "-2rem", filter: "none", marginLeft: "1rem" }}
-      //   PaperProps={{ sx: { width: "100vw", maxWidth: "100vw", paddingBottom: "2rem" } }}
-      // >
-      //   <Box>
-      //     {isLoggedIn ? (
-      //       <>
-      //         <MenuItem onClick={handleProfile}>Profile</MenuItem>
-      //         <MenuItem onClick={handleShop}>Shop</MenuItem>
-      //         <MenuItem onClick={handleLogout}>Logout</MenuItem>
-      //       </>
-      //     ) : (
-      //       <>
-      //         <MenuItem onClick={handleShop}>Shop</MenuItem>
-      //         <MenuItem onClick={handleLogin}>Login</MenuItem>
-      //         <MenuItem onClick={handleSignup}>Signup</MenuItem>
-      //       </>
-      //     )}
-      //   </Box>
-      // </Menu>
