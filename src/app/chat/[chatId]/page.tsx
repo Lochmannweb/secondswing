@@ -24,6 +24,11 @@ export default function ChatPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState("")
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([])
+  const [typingUsers, setTypingUsers] = useState<string[]>([])
+
+  // channel reference
+  const [channel, setChannel] = useState<ReturnType<typeof supabase.channel> | null>(null)
 
   // 1. Load current user
   useEffect(() => {
@@ -40,64 +45,102 @@ export default function ChatPage() {
     loadMessages(chatId as string)
   }, [chatId])
 
-    async function loadMessages(chatId: string) {
-      const { data, error } = await supabase
-        .from("messages")
-        .select("*")
-        .eq("chat_id", chatId)
-        .order("created_at", { ascending: true })
+  async function loadMessages(chatId: string) {
+    const { data, error } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("chat_id", chatId)
+      .order("created_at", { ascending: true })
 
-      if (error) {
-        console.error("Load messages error:", error)
-        return
-      }
-
-      console.log("Messages for chatId", chatId, data) // 👈 debug
-
-      if (data) setMessages(data as Message[])
+    if (error) {
+      console.error("Load messages error:", error)
+      return
     }
 
+    if (data) setMessages(data as Message[])
+  }
 
-
-  // 3. Realtime subscription
+  // 3. Setup realtime channel with presence
   useEffect(() => {
-    if (!chatId) return
+    if (!chatId || !userId) return
 
-    const channel = supabase
-      .channel("chat-" + chatId)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `chat_id=eq.${chatId}`,
-        },
-        (payload) => setMessages((msgs) => [...msgs, payload.new as Message])
+    const c = supabase.channel(`chat-room-${chatId}`, {
+      config: { presence: { key: userId } },
+    })
+
+    // Presence join
+    c.subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        await c.track({ online: true, typing: false })
+      }
+    })
+
+    // Presence sync
+    c.on("presence", { event: "sync" }, () => {
+      const state = c.presenceState()
+      const online = Object.keys(state)
+      const typing = online.filter((uid) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        state[uid].some((s: any) => s.typing)
       )
-      .subscribe()
+      setOnlineUsers(online)
+      setTypingUsers(typing)
+    })
+
+    // Realtime messages
+    c.on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "messages",
+        filter: `chat_id=eq.${chatId}`,
+      },
+      (payload) => setMessages((msgs) => [...msgs, payload.new as Message])
+    )
+
+    setChannel(c)
 
     return () => {
-      supabase.removeChannel(channel)
+      supabase.removeChannel(c)
     }
-  }, [chatId])
+  }, [chatId, userId])
 
-  // 4. Send a message
+  // 4. Send a message (optimistic UI)
   async function sendMessage() {
     if (!newMessage.trim() || !chatId || !userId) return
 
-    const { data, error } = await supabase
+    const optimisticMessage: Message = {
+      id: crypto.randomUUID(),
+      chat_id: chatId,
+      sender_id: userId,
+      content: newMessage,
+      created_at: new Date().toISOString(),
+    }
+
+    setMessages((prev) => [...prev, optimisticMessage])
+    setNewMessage("")
+
+    const { error } = await supabase
       .from("messages")
-      .insert([{ chat_id: chatId, sender_id: userId, content: newMessage }])
-      .select()
+      .insert([{ chat_id: chatId, sender_id: userId, content: optimisticMessage.content }])
 
     if (error) {
       console.error("Insert error:", error)
-    } else {
-      setMessages((prev) => [...prev, ...(data as Message[])])
-      setNewMessage("")
     }
   }
+
+  // 5. Handle typing indicator
+  function handleTyping(e: React.ChangeEvent<HTMLInputElement>) {
+    setNewMessage(e.target.value)
+    if (channel) {
+      channel.track({ online: true, typing: e.target.value.length > 0 })
+    }
+  }
+
+  // Find the "other" user (assuming only 2 users per chat)
+  const otherUserTyping = typingUsers.find((id) => id !== userId)
+  const otherUserOnline = onlineUsers.find((id) => id !== userId)
 
   return (
     <Box>
@@ -116,7 +159,12 @@ export default function ChatPage() {
           sx={{ cursor: "pointer", color: "white" }}
           onClick={() => router.push("/chat")}
         />
-        <Typography color="white">Chat</Typography>
+        <Box>
+          <Typography color="white">Chat</Typography>
+          <Typography variant="caption" color="lightgreen">
+            {otherUserOnline ? "Online" : "Offline"}
+          </Typography>
+        </Box>
         <MoreVertIcon sx={{ color: "white" }} />
       </Box>
 
@@ -128,7 +176,7 @@ export default function ChatPage() {
           marginTop: "-2rem",
           backgroundColor: "white",
           zIndex: 10,
-          height: "90vh",
+          height: "80vh",
           overflowY: "auto",
           padding: "1rem",
         }}
@@ -145,18 +193,24 @@ export default function ChatPage() {
           >
             <Typography
               sx={{
-                border:
-                  msg.sender_id === userId ? "1px solid gray" : "1px solid gray",
+                border: "1px solid gray",
                 borderRadius: "1rem",
                 padding: "0.5rem 1rem",
                 maxWidth: "60%",
-                color: "black"
+                color: "black",
               }}
             >
               {msg.content}
             </Typography>
           </Box>
         ))}
+
+        {/* Typing indicator */}
+        {otherUserTyping && (
+          <Typography variant="body2" color="gray" sx={{ fontStyle: "italic" }}>
+            The other user is typing...
+          </Typography>
+        )}
       </Box>
 
       {/* Input */}
@@ -170,12 +224,13 @@ export default function ChatPage() {
           width: "100%",
           borderTop: "1px solid gray",
           paddingTop: "1rem",
+          backgroundColor: "white",
         }}
       >
         <AddCircleOutlineIcon sx={{ color: "black" }} />
         <TextField
           value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
+          onChange={handleTyping}
           sx={{
             "& .MuiInputBase-root": {
               backgroundColor: "lightgray",
