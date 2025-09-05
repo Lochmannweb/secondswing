@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Box, TextField, Typography } from "@mui/material"
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
 import MoreVertIcon from "@mui/icons-material/MoreVert"
@@ -8,6 +8,7 @@ import ImageIcon from "@mui/icons-material/Image"
 import SendIcon from "@mui/icons-material/Send"
 import { useParams, useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
+import type { RealtimeChannel } from "@supabase/supabase-js"
 
 type Message = {
   id: string
@@ -22,125 +23,181 @@ export default function ChatPage() {
   const router = useRouter()
 
   const [userId, setUserId] = useState<string | null>(null)
+  const [otherUserId, setOtherUserId] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState("")
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([])
-  const [typingUsers, setTypingUsers] = useState<string[]>([])
+  const [presenceState, setPresenceState] = useState<Record<string, Array<{ online: boolean; typing?: boolean }>>>({})
 
-  // channel reference
-  const [channel, setChannel] = useState<ReturnType<typeof supabase.channel> | null>(null)
+  // channel refs (avoid stale closures)
+  const presenceChannelRef = useRef<RealtimeChannel | null>(null)
+  const dbChannelRef = useRef<RealtimeChannel | null>(null)
+  const bottomRef = useRef<HTMLDivElement | null>(null)
 
-  // 1. Load current user
+  // 0) Me
   useEffect(() => {
-    async function loadUser() {
+    ;(async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) setUserId(user.id)
-    }
-    loadUser()
+    })()
   }, [])
 
-  // 2. Load messages for this chat
-  useEffect(() => {
-    if (!chatId) return
-    loadMessages(chatId as string)
-  }, [chatId])
-
-  async function loadMessages(chatId: string) {
-    const { data, error } = await supabase
-      .from("messages")
-      .select("*")
-      .eq("chat_id", chatId)
-      .order("created_at", { ascending: true })
-
-    if (error) {
-      console.error("Load messages error:", error)
-      return
-    }
-
-    if (data) setMessages(data as Message[])
-  }
-
-  // 3. Setup realtime channel with presence
+  // 1) Load chat participants so we know the "other" user
   useEffect(() => {
     if (!chatId || !userId) return
+    ;(async () => {
+      const { data, error } = await supabase
+        .from("chats")
+        .select("buyer_id, seller_id")
+        .eq("id", chatId)
+        .single()
 
-    const c = supabase.channel(`chat-room-${chatId}`, {
-      config: { presence: { key: userId } },
-    })
-
-    // Presence join
-    c.subscribe(async (status) => {
-      if (status === "SUBSCRIBED") {
-        await c.track({ online: true, typing: false })
+      if (error) {
+        console.error("Failed to load chat participants:", error)
+        return
       }
-    })
+      const other =
+        data?.buyer_id === userId ? data?.seller_id :
+        data?.seller_id === userId ? data?.buyer_id : null
+      setOtherUserId(other)
+    })()
+  }, [chatId, userId])
 
-    // Presence sync
-    c.on("presence", { event: "sync" }, () => {
-      const state = c.presenceState()
-      const online = Object.keys(state)
-      const typing = online.filter((uid) =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        state[uid].some((s: any) => s.typing)
-      )
-      setOnlineUsers(online)
-      setTypingUsers(typing)
-    })
+  // 2) Load existing messages
+  useEffect(() => {
+    if (!chatId) return
+    ;(async () => {
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("chat_id", chatId)
+        .order("created_at", { ascending: true })
 
-    // Realtime messages
-    c.on(
+      if (error) {
+        console.error("Load messages error:", error)
+        return
+      }
+      setMessages((data || []) as Message[])
+    })()
+  }, [chatId])
+
+  // 3) Realtime: DB changes (new messages from the other user)
+  useEffect(() => {
+    if (!chatId) return
+    const dbChannel = supabase.channel(`db:chat-${chatId}`)
+
+    dbChannel.on(
       "postgres_changes",
-      {
-        event: "INSERT",
-        schema: "public",
-        table: "messages",
-        filter: `chat_id=eq.${chatId}`,
-      },
-      (payload) => setMessages((msgs) => [...msgs, payload.new as Message])
+      { event: "INSERT", schema: "public", table: "messages", filter: `chat_id=eq.${chatId}` },
+      (payload) => {
+        const msg = payload.new as Message
+        // Avoid duplicate append for our own message (we add ours after .insert().select())
+        if (msg.sender_id === userId) return
+        setMessages((prev) => [...prev, msg])
+        scrollToBottomSoon()
+      }
     )
 
-    setChannel(c)
-
+    dbChannel.subscribe()
+    dbChannelRef.current = dbChannel
     return () => {
-      supabase.removeChannel(c)
+      supabase.removeChannel(dbChannel)
+      dbChannelRef.current = null
     }
   }, [chatId, userId])
 
-  // 4. Send a message (optimistic UI)
+  // 4) Presence: online + typing
+  useEffect(() => {
+    if (!chatId || !userId) return
+
+    const presenceChannel = supabase.channel(`presence:chat-${chatId}`, {
+      config: { presence: { key: userId } },
+    })
+
+    presenceChannel
+      .on("presence", { event: "sync" }, () => {
+        const state = presenceChannel.presenceState()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setPresenceState(state as any)
+      })
+      .subscribe(async (status) => {
+        if (status === "SUBSCRIBED") {
+          await presenceChannel.track({ online: true, typing: false })
+        }
+      })
+
+    presenceChannelRef.current = presenceChannel
+
+    // when leaving page/tab
+    const handleBeforeUnload = () => {
+      presenceChannelRef.current?.track({ online: false, typing: false })
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+      supabase.removeChannel(presenceChannel)
+      presenceChannelRef.current = null
+    }
+  }, [chatId, userId])
+
+  // 5) Send a message (append from insert .select(); realtime will cover the peer)
   async function sendMessage() {
     if (!newMessage.trim() || !chatId || !userId) return
 
-    const optimisticMessage: Message = {
-      id: crypto.randomUUID(),
-      chat_id: chatId,
-      sender_id: userId,
-      content: newMessage,
-      created_at: new Date().toISOString(),
-    }
-
-    setMessages((prev) => [...prev, optimisticMessage])
+    const text = newMessage
     setNewMessage("")
+    // stop typing
+    presenceChannelRef.current?.track({ online: true, typing: false })
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("messages")
-      .insert([{ chat_id: chatId, sender_id: userId, content: optimisticMessage.content }])
+      .insert([{ chat_id: chatId, sender_id: userId, content: text }])
+      .select()
 
     if (error) {
       console.error("Insert error:", error)
+      return
+    }
+    if (data && data.length) {
+      setMessages((prev) => [...prev, ...(data as Message[])])
+      scrollToBottomSoon()
     }
   }
 
-  // 5. Handle typing indicator
-  function handleTyping(e: React.ChangeEvent<HTMLInputElement>) {
-    setNewMessage(e.target.value)
-    if (channel) {
-      channel.track({ online: true, typing: e.target.value.length > 0 })
+  // 6) Typing indicator handler (debounced "typing: false")
+  const typingTimeoutRef = useRef<number | null>(null)
+  function handleTypingChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value
+    setNewMessage(value)
+
+    if (!presenceChannelRef.current) return
+    presenceChannelRef.current.track({ online: true, typing: value.length > 0 })
+
+    if (typingTimeoutRef.current) {
+      window.clearTimeout(typingTimeoutRef.current)
     }
+    typingTimeoutRef.current = window.setTimeout(() => {
+      presenceChannelRef.current?.track({ online: true, typing: false })
+    }, 1500)
   }
 
-  // Find the "other" user (assuming only 2 users per chat)
-  const otherUserTyping = typingUsers.find((id) => id !== userId)
-  const otherUserOnline = onlineUsers.find((id) => id !== userId)
+  // 7) Derived presence for the other user
+  const otherUserPresence = useMemo(() => {
+    if (!otherUserId) return []
+    return presenceState[otherUserId] || []
+  }, [presenceState, otherUserId])
+
+  const otherOnline = otherUserPresence.length > 0
+  const otherTyping = otherUserPresence.some((p) => p.typing)
+
+  function scrollToBottomSoon() {
+    // next tick to ensure DOM painted
+    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 0)
+  }
+
+  useEffect(() => {
+    scrollToBottomSoon()
+  }, [messages.length])
 
   return (
     <Box>
@@ -161,8 +218,8 @@ export default function ChatPage() {
         />
         <Box>
           <Typography color="white">Chat</Typography>
-          <Typography variant="caption" color="lightgreen">
-            {otherUserOnline ? "Online" : "Offline"}
+          <Typography variant="caption" color={otherOnline ? "lightgreen" : "lightgray"}>
+            {otherOnline ? "Online" : "Offline"}
           </Typography>
         </Box>
         <MoreVertIcon sx={{ color: "white" }} />
@@ -186,8 +243,7 @@ export default function ChatPage() {
             key={msg.id}
             sx={{
               display: "flex",
-              justifyContent:
-                msg.sender_id === userId ? "flex-end" : "flex-start",
+              justifyContent: msg.sender_id === userId ? "flex-end" : "flex-start",
               marginBottom: "0.5rem",
             }}
           >
@@ -196,8 +252,10 @@ export default function ChatPage() {
                 border: "1px solid gray",
                 borderRadius: "1rem",
                 padding: "0.5rem 1rem",
-                maxWidth: "60%",
+                maxWidth: "70%",
                 color: "black",
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
               }}
             >
               {msg.content}
@@ -206,11 +264,12 @@ export default function ChatPage() {
         ))}
 
         {/* Typing indicator */}
-        {otherUserTyping && (
-          <Typography variant="body2" color="gray" sx={{ fontStyle: "italic" }}>
-            The other user is typing...
+        {otherTyping && (
+          <Typography variant="body2" color="gray" sx={{ fontStyle: "italic", px: 1, pb: 1 }}>
+            The other user is typing…
           </Typography>
         )}
+        <div ref={bottomRef} />
       </Box>
 
       {/* Input */}
@@ -230,7 +289,8 @@ export default function ChatPage() {
         <AddCircleOutlineIcon sx={{ color: "black" }} />
         <TextField
           value={newMessage}
-          onChange={handleTyping}
+          onChange={handleTypingChange}
+          onBlur={() => presenceChannelRef.current?.track({ online: true, typing: false })}
           sx={{
             "& .MuiInputBase-root": {
               backgroundColor: "lightgray",
