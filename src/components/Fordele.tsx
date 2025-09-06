@@ -6,7 +6,7 @@ function Fordele() {
         <>
             <Box 
                 sx={{ 
-                    display: "grid", 
+                    display: { xs: "grid", sm: "none" }, 
                     gap: "2rem", 
                     textAlign: "center",
                     padding: "5rem 1rem 1rem 1rem ",

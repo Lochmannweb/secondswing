@@ -13,7 +13,8 @@ export default function Home() {
         height: "100vh", 
         backgroundImage: `url(/golfbane.jpg)`,
         backgroundSize: "cover",         
-        backgroundPosition: "center",  
+        backgroundPosition: "center", 
+        marginTop: { sm: "-2.25rem" } 
       }}>
         <ForsideHero   />
         <Fordele />

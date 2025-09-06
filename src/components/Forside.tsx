@@ -8,12 +8,13 @@ export default function ForsideHero() {
         <>
             <Box
                 sx={{
-                    textAlign: "center",
+                    textAlign: { xs: "center",  sm: "left" },
+                    padding: { sm: "0 5rem" },
                     alignContent: "center",
                     height: "100vh"
                 }}
             >
-                <Typography sx={{ fontSize: "3rem" }}>
+                <Typography sx={{ fontSize: "3rem", mb: "-0.5rem" }}>
                     Golf med passion
                 </Typography>
                 <p>- brugt udstyr, nye oplevelser</p>
@@ -21,9 +22,10 @@ export default function ForsideHero() {
                     sx={{
                         backgroundColor: "white",
                         color: "black",
-                        borderRadius: "3rem",
+                        // borderRadius: "3rem",
                         padding: "0.1rem 1.2rem",
-                        top: "1rem"
+                        top: "1rem",
+                        marginTop: { sm: "1rem" }
                     }}
                     href="/auth/signup">Start nu</Button>
             </Box>

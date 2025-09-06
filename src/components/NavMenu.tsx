@@ -8,6 +8,10 @@ import { supabase } from '@/lib/supabaseClient'
 // import MenuIcon from '@mui/icons-material/Menu'
 import { Box, Link } from '@mui/material'
 import { useState, useEffect } from 'react'
+import HomeFilledIcon from '@mui/icons-material/HomeFilled';
+import CommentIcon from '@mui/icons-material/Comment';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function BasicMenu() {
   const router = useRouter()
@@ -58,22 +62,27 @@ export default function BasicMenu() {
         sx={{ 
           display: "flex",
           alignItems: "center",
-          width: "100%",
-          justifyContent: "space-around",
-          padding: "0.3rem 1rem",
-          position: "fixed",
-          bottom: 0,
-          backgroundColor: "white",
+          width: { xs: "100%", sm: "50%" },
+          justifyContent: { xs: "space-around", sm: "center" },
+          justifySelf: { sm: "center" },
+          gap: { sm: "4rem" },
+          padding: { xs: "0.3rem 1rem", sm: "0" },
+          position: { xs: "fixed", sm: "relative"},
+          bottom: { xs: 0 },
+          top: { sm: "1rem" },
+          backgroundColor: { xs: "white", sm: "#0000002b" },
           borderTopLeftRadius: "2rem",
           borderTopRightRadius: "2rem",
+          borderRadius: { xs: "0", sm: "3rem" },
           zIndex: 15,
-          filter: "drop-shadow(2px 4px 6px black)"
+          filter: "drop-shadow(2px 4px 6px black)",
+          border: { sm: "1px solid #0000002b" },
         }}>
           <Link href="/"><img src="/logo.webp" alt='logo' width={30}/></Link>
-          <MenuItem onClick={handleShop}><img src="/home.png" alt='logo' width={20}/></MenuItem>
-          <MenuItem onClick={handleChatHistory}><img src="/comment.png" alt='logo' width={20}/></MenuItem>
-          <MenuItem onClick={handleFav}><img src="/heart.png" alt='logo' width={20}/></MenuItem>
-          <MenuItem onClick={handleProfile}><img src="/user.png" alt='logo' width={19}/></MenuItem>
+          <HomeFilledIcon onClick={handleShop} sx={{ xs: "black", sm: "white", cursor: "pointer" }} />
+          <CommentIcon onClick={handleChatHistory} sx={{ xs: "black", sm: "white", cursor: "pointer" }} />
+          <FavoriteIcon onClick={handleFav} sx={{ xs: "black", sm: "white", cursor: "pointer" }} />
+          <PersonIcon onClick={handleProfile} sx={{ xs: "black", sm: "white", cursor: "pointer" }} />
       </Box>
     </>
   )

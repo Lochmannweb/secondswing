@@ -12,7 +12,12 @@ function Kategorier() {
     }
 
     return (
-        <Box sx={{ textAlign: "center", padding: "5rem 3rem 3rem 3rem", paddingBottom: "8rem" }}>
+        <Box 
+            sx={{ 
+                display: { xs: "grid", sm: "none" },
+                textAlign: "center", 
+                padding: "5rem 3rem 3rem 3rem", 
+                paddingBottom: "8rem" }}>
             <Box sx={{ marginBottom: "2rem", color: "black" }}>
                 <Typography variant="h5" style={{ marginBottom: "0px" }} gutterBottom>Golfudstyr til enhver spiller</Typography>
                 <p style={{ fontSize: "0.8rem" }}>Find din stil og dit spil</p>
