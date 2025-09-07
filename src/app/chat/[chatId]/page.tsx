@@ -55,9 +55,9 @@ export default function ChatPage() {
           id,
           buyer_id,
           seller_id,
-          product:product_id ( title ),
-          buyer:buyer_id ( display_name ),
-          seller:seller_id ( display_name )
+          product:product_id!inner ( title ),
+          buyer:buyer_id!inner ( display_name ),
+          seller:seller_id!inner ( display_name )
         `)
         .eq("id", chatId)
         .maybeSingle()
@@ -75,9 +75,9 @@ export default function ChatPage() {
 
       setChatMeta({
         amIBuyer,
-        productTitle: data.product?.title ?? "Unknown product",
-        buyerName: data.buyer?.display_name ?? "Unknown buyer",
-        sellerName: data.seller?.display_name ?? "Unknown seller",
+        productTitle: data.product?.[0]?.title ?? "Unknown product",
+        buyerName: data.buyer?.[0].display_name ?? "Unknown buyer",
+        sellerName: data.seller?.[0].display_name ?? "Unknown seller",
       })
     })()
   }, [chatId, userId])
@@ -170,7 +170,7 @@ export default function ChatPage() {
         <Box sx={{ textAlign: "center", color: "white" }}>
           {chatMeta && (
             <>
-              <Typography color="white" fontWeight="bold">
+              <Typography color="white">
                 {/* {chatMeta.sellerName} */}
                 {chatMeta.amIBuyer ? chatMeta.sellerName : chatMeta.buyerName}
               </Typography>

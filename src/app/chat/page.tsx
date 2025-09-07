@@ -15,6 +15,8 @@ type Chat = {
   seller_id: string
   product_id: string
   product?: { title: string }
+  buyerName: string
+  sellerName: string
   messages?: { content: string; created_at: string }[]
 }
 
@@ -64,7 +66,9 @@ export default function ChatLayout() {
           buyer_id,
           seller_id,
           product_id,
-          products (title),
+          product:product_id ( title ),
+          buyer:buyer_id ( display_name ),
+          seller:seller_id ( display_name ),
           messages (
             id,
             content,
@@ -85,7 +89,9 @@ export default function ChatLayout() {
         buyer_id: chat.buyer_id,
         seller_id: chat.seller_id,
         product_id: chat.product_id,
-        product: chat.products,
+        product: chat.product,
+        buyerName: chat.buyer?.display_name ?? "Unknown buyer",
+        sellerName: chat.seller?.display_name ?? "Unknown seller",
         messages: chat.messages?.sort(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (a: any, b: any) =>
@@ -115,7 +121,7 @@ export default function ChatLayout() {
     })()
   }, [activeChatId])
 
-  // Load chat meta
+  // Load chat meta for active chat
   useEffect(() => {
     if (!activeChatId || !userId) return
     (async () => {
@@ -125,9 +131,9 @@ export default function ChatLayout() {
           id,
           buyer_id,
           seller_id,
-          product:product_id ( title ),
-          buyer:buyer_id ( display_name ),
-          seller:seller_id ( display_name )
+          product:product_id!inner ( title ),
+          buyer:buyer_id!inner ( display_name ),
+          seller:seller_id!inner ( display_name )
         `)
         .eq("id", activeChatId)
         .maybeSingle()
@@ -141,9 +147,9 @@ export default function ChatLayout() {
       const amIBuyer = data.buyer_id === userId
       setChatMeta({
         amIBuyer,
-        productTitle: data.product?.title ?? "Unknown product",
-        buyerName: data.buyer?.display_name ?? "Unknown buyer",
-        sellerName: data.seller?.display_name ?? "Unknown seller",
+        productTitle: data.product?.[0]?.title ?? "Unknown product",
+        buyerName: data.buyer?.[0].display_name ?? "Unknown buyer",
+        sellerName: data.seller?.[0].display_name ?? "Unknown seller",
       })
     })()
   }, [activeChatId, userId])
@@ -204,7 +210,6 @@ export default function ChatLayout() {
         maxWidth: { sm: 1200 },
         mx: { sm: "auto" }, 
         p: { sm: 2 }, 
-        // pb: { sm: "6rem" }, 
         display: {sm: "flex" }, 
         color: "black"
       }}>
@@ -221,6 +226,8 @@ export default function ChatLayout() {
         <Typography variant="h6" sx={{ p: 2, borderBottom: "1px solid black" }}>Chat History</Typography>
         {chats.map((chat) => {
           const lastMsg = chat.messages?.[0]?.content ?? "No messages yet"
+          const otherName = userId === chat.buyer_id ? chat.sellerName : chat.buyerName
+
           return (
             <Box
               key={chat.id}
@@ -233,14 +240,8 @@ export default function ChatLayout() {
               }}
               onClick={() => setActiveChatId(chat.id)}
             >
-              <Typography>
-                {chatMeta && (
-                    <Typography fontWeight="bold">
-                      {chatMeta.amIBuyer ? chatMeta.sellerName : chatMeta.buyerName}
-                    </Typography>
-                )}
-              </Typography>
-              <Typography fontWeight="bold">{chat.product?.title ?? "Unknown product"}</Typography>
+              <Typography fontWeight="bold">{otherName}</Typography>
+              <Typography>{chat.product?.title ?? "Unknown product"}</Typography>
               <Typography variant="body2" color="text.secondary" noWrap>
                 {lastMsg}
               </Typography>
@@ -281,9 +282,7 @@ export default function ChatLayout() {
               <Box sx={{ textAlign: "center" }}>
                 {chatMeta && (
                   <>
-                    <Typography fontWeight="bold">
-                      {chatMeta.amIBuyer ? chatMeta.sellerName : chatMeta.buyerName}
-                    </Typography>
+                    {chatMeta.amIBuyer ? chatMeta.sellerName : chatMeta.buyerName}
                     {chatMeta.amIBuyer && (
                       <Typography variant="caption">{chatMeta.productTitle}</Typography>
                     )}
