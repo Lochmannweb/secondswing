@@ -1,8 +1,10 @@
+
 import { supabase } from "@/lib/supabaseClient"
-import { Box, Button, Divider } from "@mui/material"
+import { Box, Button, Divider, Typography } from "@mui/material"
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params 
+
 
   // hent produkt + ejerens profil i ét query
   const { data: product, error } = await supabase
@@ -23,20 +25,36 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const profileDisplayName = product.profiles?.display_name ?? "Ukendt bruger"
   
   return (
-    <Box sx={{ paddingBottom: "6rem" }}>
-      {product.image_url && (
-        <img
-          src={product.image_url}
-          alt={product.title}
-          style={{ width: "100%" }}
-        />
-      )}
+    <Box 
+      sx={{ 
+        paddingBottom: { xs: "6rem"},
+        display: { sm: "flex" },
+        alignItems: { sm: "center" },
+        justifyContent: { sm: "space-around" },
+        maxWidth: { sm: 1000 }, 
+        mx: { sm: "auto" } , 
+        p: { sm: "12rem 1rem" }, 
+      }}>
+          {product.image_url && (
+            <Box
+              component="img"
+              src={product.image_url}
+              alt={product.title}
+              sx={{
+                width: {
+                  xs: "100%",   // mobil
+                  sm: "35%",  // tablet/desktop
+                },
+                borderRadius: { xs: "0", sm: "1rem"}
+              }}        
+              />
+            )}
 
       <Box sx={{ padding: "1rem" }}>
         <Box
           sx={{
             color: "black",
-            display: "flex",
+            display: { xs: "flex", sm: "flex" },
             justifyContent: "space-between",
             alignItems: "center",
           }}
@@ -55,15 +73,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <Box
           sx={{
             color: "black",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            width: { sm: "300px" }
           }}
         >
           <h1 style={{ fontSize: "1rem" }}>{product.title}</h1>
-          <p>
-            <strong>{product.price?.toFixed(2)} DKK</strong>
-          </p>
         </Box>
 
         <Box
@@ -81,6 +94,19 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <p>Farve: {product.color}</p>
           <p>Brand: {product.brand}</p>
           <p>Tilstand: {product.stand}</p>
+        </Box>
+
+        <Divider sx={{ backgroundColor: "black", width: "100%", mb: 3, mt: 3 }} />
+
+        <Box 
+          sx={{
+            color: "black",
+            display: { xs: "flex", sm: "flex" },
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}>
+          <Typography>Price: </Typography>
+          <Typography>{product.price?.toFixed(2)} DKK</Typography>
         </Box>
 
         <Button

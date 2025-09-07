@@ -151,7 +151,7 @@ export default function ChatPage() {
   }, [messages.length])
 
   return (
-    <Box>
+    <Box >
       {/* Header */}
       <Box
         sx={{

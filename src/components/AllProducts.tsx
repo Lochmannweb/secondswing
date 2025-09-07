@@ -85,7 +85,7 @@ const toggleFavorite = async (productId: string) => {
   return (
     <Grid container spacing={2}>
       {products.map((product) => (
-        <Grid size={{ xs: 6, sm: 6, md: 4 }} key={product.id}>
+        <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
           <Card sx={{ height: "100%" }}>
             {product.image_url && (
               <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />

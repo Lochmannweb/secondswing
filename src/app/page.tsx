@@ -3,7 +3,6 @@
 import Fordele from "@/components/Fordele";
 import ForsideHero from "@/components/Forside";
 import Kategorier from "@/components/Kategorier";
-// import NavMenu from "@/components/NavMenu";
 import { Box } from "@mui/material";
 
 export default function Home() {
@@ -14,7 +13,7 @@ export default function Home() {
         backgroundImage: `url(/golfbane.jpg)`,
         backgroundSize: "cover",         
         backgroundPosition: "center", 
-        marginTop: { sm: "-2.25rem" } 
+        marginTop: { sm: "-2.75rem" } 
       }}>
         <ForsideHero   />
         <Fordele />

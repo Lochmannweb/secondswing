@@ -2,29 +2,30 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-// import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 import { supabase } from '@/lib/supabaseClient'
-// import MenuIcon from '@mui/icons-material/Menu'
-import { Box, Link } from '@mui/material'
+import { Box, Link, Typography, useMediaQuery, Drawer, IconButton } from '@mui/material'
 import { useState, useEffect } from 'react'
-import HomeFilledIcon from '@mui/icons-material/HomeFilled';
-import CommentIcon from '@mui/icons-material/Comment';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import PersonIcon from '@mui/icons-material/Person';
+import { useTheme } from '@mui/material/styles'
+import HomeFilledIcon from '@mui/icons-material/HomeFilled'
+import CommentIcon from '@mui/icons-material/Comment'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import PersonIcon from '@mui/icons-material/Person'
+import ListIcon from '@mui/icons-material/List'
+import CloseIcon from '@mui/icons-material/Close'
 
 export default function BasicMenu() {
   const router = useRouter()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [open, setOpen] = useState(false)
+
+  const theme = useTheme()
+  const isTabletUp = useMediaQuery(theme.breakpoints.up('sm'))
 
   useEffect(() => {
-    // Hent session ved mount
     supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(!!data.session)
     })
 
-    // Lyt på login/logout events
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(!!session)
     })
@@ -34,57 +35,132 @@ export default function BasicMenu() {
     }
   }, [])
 
-  const handleClose = () => setAnchorEl(null)
+  const handleClose = () => setOpen(false)
+  const handleOpenMenu = () => setOpen(true)
 
   const handleProfile = () => {
     router.push('/profile')
     handleClose()
   }
-
   const handleChatHistory = () => {
     router.push('/chat')
     handleClose()
   }
-
   const handleFav = () => {
     router.push('/favoriter')
     handleClose()
   }
-
   const handleShop = () => {
     router.push('/shop')
     handleClose()
   }
 
   return (
-    <>
-      <Box
-        sx={{ 
-          display: "flex",
-          alignItems: "center",
-          width: { xs: "100%", sm: "50%" },
-          justifyContent: { xs: "space-around", sm: "center" },
-          justifySelf: { sm: "center" },
-          gap: { sm: "4rem" },
-          padding: { xs: "0.3rem 1rem", sm: "0" },
-          position: { xs: "fixed", sm: "relative"},
-          bottom: { xs: 0 },
-          top: { sm: "1rem" },
-          backgroundColor: { xs: "white", sm: "#0000002b" },
-          borderTopLeftRadius: "2rem",
-          borderTopRightRadius: "2rem",
-          borderRadius: { xs: "0", sm: "3rem" },
-          zIndex: 15,
-          filter: "drop-shadow(2px 4px 6px black)",
-          border: { sm: "1px solid #0000002b" },
-        }}>
-          <Link href="/"><img src="/logo.webp" alt='logo' width={30}/></Link>
-          <HomeFilledIcon onClick={handleShop} sx={{ xs: "black", sm: "white", cursor: "pointer" }} />
-          <CommentIcon onClick={handleChatHistory} sx={{ xs: "black", sm: "white", cursor: "pointer" }} />
-          <FavoriteIcon onClick={handleFav} sx={{ xs: "black", sm: "white", cursor: "pointer" }} />
-          <PersonIcon onClick={handleProfile} sx={{ xs: "black", sm: "white", cursor: "pointer" }} />
-      </Box>
-    </>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'space-between',
+        padding: { xs: '0.3rem 1rem', sm: '0 5rem' },
+        position: { xs: 'fixed', sm: 'sticky' },
+        bottom: { xs: 0 },
+        top: { sm: '1rem' },
+        backgroundColor: { xs: 'white', sm: 'transparent' },
+        borderTopLeftRadius: '1rem',
+        borderTopRightRadius: '1rem',
+        filter: { xs: "drop-shadow(2px 4px 6px black)", sm: "none" },
+        zIndex: 15,
+      }}
+    >
+      <Link href="/">
+        <img src="/logo.webp" alt="logo" width={40} />
+      </Link>
+
+      {isTabletUp ? (
+        <>
+          {!open && (
+            <ListIcon
+              onClick={handleOpenMenu}
+              sx={{
+                fontSize: "2rem",
+                color: 'black',
+                cursor: 'pointer'
+              }}
+            />
+          )}
+
+          {/* Drawer that slides from right */}
+          <Drawer
+            anchor="right"
+            open={open}
+            onClose={handleClose}
+            PaperProps={{
+              sx: {
+                width: "20%",
+                backgroundColor: "#000000ba",
+                padding: "1rem",
+                display: "flex",
+                flexDirection: "column",
+              }
+            }}
+          >
+            {/* Close button */}
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <IconButton onClick={handleClose}>
+                <CloseIcon sx={{ color: 'white' }} />
+              </IconButton>
+            </Box>
+
+            {/* Menu items */}
+            <Box sx={{ mt: 2 }}>
+              <Typography
+                onClick={handleShop}
+                sx={menuItemStyle}
+              >
+                Shop
+              </Typography>
+              <Typography
+                onClick={handleChatHistory}
+                sx={menuItemStyle}
+              >
+                Chat History
+              </Typography>
+              <Typography
+                onClick={handleFav}
+                sx={menuItemStyle}
+              >
+                Favourites
+              </Typography>
+              {isLoggedIn && (
+                <Typography
+                  onClick={handleProfile}
+                  sx={menuItemStyle}
+                >
+                  Profile
+                </Typography>
+              )}
+            </Box>
+          </Drawer>
+        </>
+      ) : (
+        <>
+          <HomeFilledIcon onClick={handleShop} sx={{ color: 'black', cursor: 'pointer' }} />
+          <CommentIcon onClick={handleChatHistory} sx={{ color: 'black', cursor: 'pointer' }} />
+          <FavoriteIcon onClick={handleFav} sx={{ color: 'black', cursor: 'pointer' }} />
+          {isLoggedIn && <PersonIcon onClick={handleProfile} sx={{ color: 'black', cursor: 'pointer' }} />}
+        </>
+      )}
+    </Box>
   )
 }
 
+// Styles for menu items
+const menuItemStyle = {
+  color: 'white',
+  cursor: 'pointer',
+  fontSize: "2rem",
+  borderBottom: "1px solid white",
+  width: "100%",
+  padding: "1rem 0",
+}

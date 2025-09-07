@@ -98,12 +98,12 @@ export default function Favoriter() {
 
   return (
     <>
-    <Box sx={{ padding: "1rem" }}>
-    <Typography color="black">Mine Favoriter</Typography>
-    <Divider sx={{ backgroundColor: "black", width: "50%", mb: "3rem" }} />
+    <Box sx={{ maxWidth: 1200, mx: "auto", p: 2, pb: "6rem" }}>
+    <Typography variant="h5" sx={{ mb: 2, borderBottom: "1px solid black", color: "black" }}>Mine Favoriter</Typography>
+    {/* <Divider sx={{ backgroundColor: "black", width: "50%", mb: "3rem" }} /> */}
     <Grid container spacing={2}>
       {products.map((product) => (
-        <Grid size={{ xs: 6, sm: 6, md: 4 }} key={product.id}>
+        <Grid size={{ xs: 6, sm: 6, md: 3 }} key={product.id}>
           <Card sx={{ height: "100%", position: "relative" }}>
             {product.image_url && (
               <CardMedia component="img" height="200" image={product.image_url} alt={product.title} />
