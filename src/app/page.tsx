@@ -15,7 +15,7 @@ export default async function Home() {
             backgroundImage: `url(/golfbane.jpg)`,
             backgroundSize: "cover",         
             backgroundPosition: "center", 
-            marginTop: { sm: "-2.75rem" } 
+            marginTop: { xs: "-4.5rem", sm: "-2.75rem" } 
           }}
           >
             <ForsideHero   />

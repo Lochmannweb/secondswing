@@ -32,10 +32,10 @@ export default function ForsideHero() {
             >
                 <Typography 
                   sx={{ 
-                    fontSize: { xs: "2.5rem", sm : "5rem" }, 
+                    fontSize: { xs: "3rem", sm : "5rem" }, 
                     mb: "0rem", 
                     lineHeight: "3rem",
-                    fontFamily: "auto"
+                    fontFamily: "JacquesFrancois"
                     }}
                   >
                     Golf med passion
