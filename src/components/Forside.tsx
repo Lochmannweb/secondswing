@@ -4,6 +4,8 @@ import React from 'react'
 import { Box, Button, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useRouter } from 'next/navigation'
+import "@/app/font.module.css";
+
 
 export default function ForsideHero() {
     const theme = useTheme()
@@ -22,23 +24,34 @@ export default function ForsideHero() {
             <Box
                 sx={{
                     textAlign: "center",
-                    // padding: { sm: "0 5rem",  },
                     alignContent: "center",
-                    height: "100vh"
+                    height: "100vh",
+                    fontFamily: "JacquesFrancois",
+                    background: { xs: "linear-gradient(0deg, black, transparent)" }
                 }}
             >
-                <Typography sx={{ fontSize: "3rem", mb: "-0.5rem" }}>
+                <Typography 
+                  sx={{ 
+                    fontSize: { xs: "3.5rem", sm : "5rem" }, 
+                    mb: "-1rem", 
+                    fontFamily: "JacquesFrancois",
+                    }}
+                  >
                     Golf med passion
                 </Typography>
-                <p>- brugt udstyr, nye oplevelser</p>
+                <p style={{ fontSize: "1.5rem", color: "grey" }}>- brugt udstyr, nye oplevelser</p>
                 <Button
                     sx={{
-                        backgroundColor: "white",
-                        color: "black",
-                        // borderRadius: "3rem",
+                        backgroundColor: "transparent",
+                        border: "1px solid white",
+                        color: "white",
                         padding: "0.1rem 1.2rem",
-                        top: "1rem",
-                        // marginTop: { sm: "1rem" }
+                        top: "2rem",
+                        fontFamily: "JacquesFrancois",
+                        "&:hover": {
+                          backgroundColor: "white",
+                          color: "black",
+                        }
                     }}
                     href="/auth/signup">Start nu</Button>
             </Box>

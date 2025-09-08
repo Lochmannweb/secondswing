@@ -17,23 +17,34 @@ function Kategorier() {
                 display: { xs: "grid", sm: "none" },
                 textAlign: "center", 
                 padding: "5rem 3rem 3rem 3rem", 
-                paddingBottom: "8rem" }}>
-            <Box sx={{ marginBottom: "2rem", color: "black" }}>
-                <Typography variant="h5" style={{ marginBottom: "0px" }} gutterBottom>Golfudstyr til enhver spiller</Typography>
-                <p style={{ fontSize: "0.8rem" }}>Find din stil og dit spil</p>
+                paddingBottom: "8rem" ,
+                fontFamily: "JacquesFrancois"
+            }}>
+            <Box sx={{ marginBottom: "2rem"}}>
+                <Typography 
+                    sx={{ 
+                        marginBottom: "0px", 
+                        fontFamily: "JacquesFrancois", 
+                        fontSize: "2rem"
+                    }} 
+                    gutterBottom>
+                        Golfudstyr til enhver spiller
+                </Typography>
+                <p style={{ fontSize: "1rem" }}>Find din stil og dit spil</p>
             </Box>
 
             <Stack sx={{ display: "grid", gap: "3rem", }}>
-                <Box sx={{ position: "relative",  }}>
-                    <img
-                        src="/golfsætold.jpg"
-                        alt="golf"
-                        style={{
-                            width: "80%",
-                            borderRadius: "2rem",
+                <Box sx={{ position: "relative" }}>
+                    <Box 
+                        component="img"
+                        src={`/golfsætold.jpg`}
+                        alt={"golf"}
+                        sx={{
+                            width: "95%",
+                            borderRadius: "1rem",
                             display: "block",
-                            filter: "brightness(0.5)",
-                            margin: "auto"
+                            margin: "auto",
+                            filter: "brightness(0.5)"
                         }}
                     />
                     <Box
@@ -41,23 +52,31 @@ function Kategorier() {
                             position: "absolute",
                             top: "50%",
                             left: "50%",
+                            width: "100%",
                             transform: "translate(-50%, -50%)",
                             textAlign: "center",
-                            color: "white",
                             display: "grid",
-                            gap: "1rem"
+                            gap: "1rem",
                         }}
                     >
-                        <Typography sx={{ fontWeight: "bold", fontSize: "1.5rem", marginBottom: "-1rem" }}>Alle på banen</Typography>
-                        <p style={{ fontSize: "12px" }}>- Golfudstyr til ALLE spillere</p>
+                        <Typography 
+                            sx={{ 
+                                // fontWeight: "bold", 
+                                fontSize: "3rem", 
+                                marginBottom: "-1.5rem",
+                                fontFamily: "JacquesFrancois"
+                            }}>
+                                Alle på banen
+                        </Typography>
+                        <p style={{ fontSize: "1rem" }}>- Golfudstyr til ALLE spillere</p>
                         <Button
                             variant="contained"
                             sx={{ 
-                                borderRadius: "2rem", 
+                                borderRadius: "1rem", 
                                 backgroundColor: "transparent",
-                                border: "1px solid grey",
+                                border: "1px solid white",
                                 padding: "0.1rem", 
-                                width: "70%", 
+                                width: "30%", 
                                 margin: "auto",
                                 fontSize: "0.7rem", 
                                 "&:hover": {
@@ -74,15 +93,16 @@ function Kategorier() {
 
 
                 <Box sx={{ position: "relative",  }}>
-                    <img
-                        src="/golfforfemale.jpg"
-                        alt="golf"
-                        style={{
-                            width: "80%",
-                            borderRadius: "2rem",
+                    <Box 
+                        component="img"
+                        src={`/golfforfemale.jpg`}
+                        alt={"golf"}
+                        sx={{
+                            width: "95%",
+                            borderRadius: "1rem",
                             display: "block",
+                            margin: "auto",
                             filter: "brightness(0.5)",
-                            margin: "auto"
                         }}
                     />
                     <Box
@@ -90,6 +110,7 @@ function Kategorier() {
                             position: "absolute",
                             top: "50%",
                             left: "50%",
+                            width: "100%",
                             transform: "translate(-50%, -50%)",
                             textAlign: "center",
                             color: "white",
@@ -97,16 +118,23 @@ function Kategorier() {
                             gap: "1rem"
                         }}
                     >
-                        <Typography sx={{ fontWeight: "bold", fontSize: "1.5rem", marginBottom: "-1rem" }}>For hende</Typography>
-                        <p style={{ fontSize: "12px" }}>- Stilfuldt & effektivt til kvindelige golfere</p>
+                        <Typography 
+                            sx={{ 
+                                fontSize: "3rem", 
+                                marginBottom: "-1rem",
+                                fontFamily: "JacquesFrancois"
+                            }}>
+                                For hende
+                        </Typography>
+                        <p style={{ fontSize: "1rem" }}>- Stilfuldt & effektivt til kvindelige golfere</p>
                         <Button
                             variant="contained"
                             sx={{ 
-                                borderRadius: "2rem", 
+                                borderRadius: "1rem", 
                                 backgroundColor: "transparent",
                                 border: "1px solid grey",
                                 padding: "0.1rem", 
-                                width: "70%", 
+                                width: "30%", 
                                 margin: "auto",
                                 fontSize: "0.7rem", 
                                 "&:hover": {
@@ -123,12 +151,13 @@ function Kategorier() {
 
 
                 <Box sx={{ position: "relative",  }}>
-                    <img
-                        src="/golfformale2.jpg"
-                        alt="golf"
-                        style={{
-                            width: "80%",
-                            borderRadius: "2rem",
+                    <Box 
+                        component="img"
+                        src={`/golfformale2.jpg`}
+                        alt={"golf"}
+                        sx={{
+                            width: "95%",
+                            borderRadius: "1rem",
                             display: "block",
                             filter: "brightness(0.5)",
                             margin: "auto"
@@ -139,6 +168,7 @@ function Kategorier() {
                             position: "absolute",
                             top: "50%",
                             left: "50%",
+                            width: "100%",
                             transform: "translate(-50%, -50%)",
                             textAlign: "center",
                             color: "white",
@@ -146,16 +176,24 @@ function Kategorier() {
                             gap: "1rem"
                         }}
                     >
-                        <Typography variant="h4" sx={{ fontWeight: "bold" }}>For ham</Typography>
-                        <Typography variant="subtitle1">- Performance gear til den dedikerede mand</Typography>
+                        <Typography 
+                            variant="h4" 
+                            sx={{ 
+                                fontFamily: "JacquesFrancois",
+                                fontSize: "3rem",
+                                marginBottom: "-1rem",
+                            }}>
+                                For ham
+                        </Typography>
+                        <p style={{ fontSize: "1rem" }}>- Performance gear til den dedikerede mand</p>
                         <Button
                             variant="contained"
                             sx={{ 
                                 borderRadius: "2rem", 
                                 backgroundColor: "transparent",
-                                border: "1px solid grey",
+                                border: "1px solid white",
                                 padding: "0.1rem", 
-                                width: "70%", 
+                                width: "30%", 
                                 margin: "auto",
                                 fontSize: "0.7rem", 
                                 "&:hover": {
