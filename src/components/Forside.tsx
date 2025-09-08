@@ -32,14 +32,15 @@ export default function ForsideHero() {
             >
                 <Typography 
                   sx={{ 
-                    fontSize: { xs: "3.5rem", sm : "5rem" }, 
-                    mb: "-1rem", 
-                    fontFamily: "JacquesFrancois",
+                    fontSize: { xs: "2.5rem", sm : "5rem" }, 
+                    mb: "0rem", 
+                    lineHeight: "3rem",
+                    fontFamily: "auto"
                     }}
                   >
                     Golf med passion
                 </Typography>
-                <p style={{ fontSize: "1.5rem", color: "grey" }}>- brugt udstyr, nye oplevelser</p>
+                <p style={{ fontSize: "1rem", color: "grey" }}>- brugt udstyr, nye oplevelser</p>
                 <Button
                     sx={{
                         backgroundColor: "transparent",
